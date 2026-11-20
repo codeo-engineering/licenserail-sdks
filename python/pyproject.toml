@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "licenserail"
+version = "0.1.0"
+description = "LicenseRail client SDK: offline license verification, activation, refresh, floating leases and the management API."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Codeo Solutions Limited" }]
+requires-python = ">=3.9"
+dependencies = ["cryptography>=41"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/licenserail"]

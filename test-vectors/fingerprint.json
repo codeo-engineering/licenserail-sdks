@@ -1,0 +1,65 @@
+{
+  "description": "component = lowercase_hex(SHA256(utf8(\"codeo:\" + product + \":\" + part + \":\" + upper(trim(raw))))); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
+  "cases": [
+    {
+      "product": "demo-app",
+      "part": "machine",
+      "raw": "6f1a7e2c-3b4d-4e5f-8a9b-0c1d2e3f4a5b",
+      "hash": "5db90ae81d20c8938dba0d492487c34a644b6e9263d927ecdac5b9dbb1eec0a8"
+    },
+    {
+      "product": "demo-app",
+      "part": "disk",
+      "raw": "1A2B3C4D",
+      "hash": "b17945a4bbc3b352ed0df23a8f6f63150daeb668345cb38952bca9be5fc80d65"
+    },
+    {
+      "product": "demo-app",
+      "part": "host",
+      "raw": "desktop-01",
+      "hash": "320c4cf1f58b02126f311781bc94ba982bfc26bdcbec37a8e0be9453efb2acfc"
+    },
+    {
+      "product": "demo-app",
+      "part": "host",
+      "raw": "  Desktop-01  ",
+      "hash": "320c4cf1f58b02126f311781bc94ba982bfc26bdcbec37a8e0be9453efb2acfc"
+    },
+    {
+      "product": "demo-app",
+      "part": "board",
+      "raw": " 4c4c4544-0042-3510-8048-b4c04f4e4d32 ",
+      "hash": "0d45f9819bb99f43412f2d669223096e2e70c1f66e7b8e5b6f77f976d24cdc1c"
+    },
+    {
+      "product": "other-app",
+      "part": "board",
+      "raw": "4C4C4544-0042-3510-8048-B4C04F4E4D32",
+      "hash": "a6993e5401e2dcd0f863dc518df843bce016735b528a80ca6a67bd61ae106bb6"
+    },
+    {
+      "product": "demo-app",
+      "part": "disk",
+      "raw": "",
+      "hash": "none"
+    },
+    {
+      "product": "demo-app",
+      "part": "disk",
+      "raw": "   ",
+      "hash": "none"
+    },
+    {
+      "product": "demo-app",
+      "part": "board",
+      "raw": null,
+      "hash": "none"
+    },
+    {
+      "product": "demo-app",
+      "part": "host",
+      "raw": "çağatay-pc",
+      "hash": "c2aea270e40eadc043b72f711e69b863721a27418ac81e1941483972c608ee95"
+    }
+  ]
+}

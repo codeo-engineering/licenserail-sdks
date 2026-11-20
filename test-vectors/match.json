@@ -1,0 +1,239 @@
+{
+  "description": "registered.Matches(presented): board registered → board equal AND ≥1 of machine/disk/host; else ≥2 of 3. 'none'/empty never match. os compared case-insensitively only when both sides have one.",
+  "cases": [
+    {
+      "name": "identical",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "matches": true
+    },
+    {
+      "name": "board + one other",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "presented": {
+        "machineId": "x",
+        "diskId": "b",
+        "hostName": "y",
+        "boardId": "d",
+        "os": null
+      },
+      "matches": true
+    },
+    {
+      "name": "board alone is not enough",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "presented": {
+        "machineId": "x",
+        "diskId": "y",
+        "hostName": "z",
+        "boardId": "d",
+        "os": null
+      },
+      "matches": false
+    },
+    {
+      "name": "three others without board match fails when board registered",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "e",
+        "os": null
+      },
+      "matches": false
+    },
+    {
+      "name": "no board registered: two of three",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "z",
+        "boardId": "q",
+        "os": null
+      },
+      "matches": true
+    },
+    {
+      "name": "no board registered: one of three fails",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "y",
+        "hostName": "z",
+        "boardId": "none",
+        "os": null
+      },
+      "matches": false
+    },
+    {
+      "name": "none never matches none",
+      "registered": {
+        "machineId": "none",
+        "diskId": "none",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "presented": {
+        "machineId": "none",
+        "diskId": "none",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "matches": false
+    },
+    {
+      "name": "presented none cannot sidestep registered board",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "matches": false
+    },
+    {
+      "name": "same os",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "macos"
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "x",
+        "boardId": "d",
+        "os": "macos"
+      },
+      "matches": true
+    },
+    {
+      "name": "os mismatch fails",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "windows"
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "linux"
+      },
+      "matches": false
+    },
+    {
+      "name": "os case-insensitive",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "Windows"
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "windows"
+      },
+      "matches": true
+    },
+    {
+      "name": "legacy registered without os matches presented os",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": null
+      },
+      "presented": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "windows"
+      },
+      "matches": true
+    },
+    {
+      "name": "empty string never matches",
+      "registered": {
+        "machineId": "",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "presented": {
+        "machineId": "",
+        "diskId": "y",
+        "hostName": "c",
+        "boardId": "none",
+        "os": null
+      },
+      "matches": false
+    }
+  ]
+}

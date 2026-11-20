@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Generates ../../test-vectors from the reference implementation (Codeo.Licensing.Core in licenserail-api).
+       Run with licenserail-api checked out next to this repo as ../api (local layout CodeoKey/api + CodeoKey/sdks). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(CoreProject)" Condition="'$(CoreProject)' != ''" />
+    <ProjectReference Include="..\..\..\api\src\Codeo.Licensing.Core\Codeo.Licensing.Core.csproj" Condition="'$(CoreProject)' == ''" />
+  </ItemGroup>
+</Project>

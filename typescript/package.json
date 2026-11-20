@@ -1,0 +1,21 @@
+{
+  "name": "licenserail",
+  "version": "0.1.0",
+  "description": "LicenseRail client SDK: offline license verification, activation, refresh, floating leases and the management API.",
+  "license": "MIT",
+  "author": "Codeo Solutions Limited",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "files": ["dist"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test test/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.6.0"
+  }
+}

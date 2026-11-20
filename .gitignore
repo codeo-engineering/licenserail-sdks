@@ -1,0 +1,11 @@
+node_modules/
+dist/
+bin/
+obj/
+__pycache__/
+*.egg-info/
+target/
+build/
+.build/
+vendor/
+*.class

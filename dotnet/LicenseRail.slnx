@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/LicenseRail/LicenseRail.csproj" />
+  <Project Path="tests/LicenseRail.Tests/LicenseRail.Tests.csproj" />
+</Solution>
