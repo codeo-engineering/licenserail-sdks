@@ -1,0 +1,2323 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "LicenseRail API",
+    "description": "Licensing API. Authenticate with 'Authorization: Bearer <API key or access token>'. Live/Test: API keys are bound to one environment; access tokens use the X-Environment header (default test).",
+    "version": "2"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5080/"
+    }
+  ],
+  "paths": {
+    "/api/client/v2/activate": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_activate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/refresh": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_refresh",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/deactivate": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_deactivate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeactivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/floating/checkout": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_floating_checkout",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/floating/heartbeat": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_floating_heartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/floating/release": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_floating_release",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeactivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/public-keys/{keyId}": {
+      "get": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_get_public_key",
+        "parameters": [
+          {
+            "name": "keyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [ ],
+        "x-mcp": false
+      }
+    },
+    "/api/v2/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "List products",
+        "operationId": "list_products",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startingAfter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "post": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Create a product",
+        "operationId": "create_product",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/products/{id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Get a product",
+        "operationId": "get_product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "patch": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Update a product (JSON merge patch)",
+        "operationId": "update_product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "delete": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Delete a product without licenses",
+        "operationId": "delete_product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/products/{id}/features": {
+      "get": {
+        "tags": [
+          "features"
+        ],
+        "summary": "List a product's features",
+        "operationId": "list_features",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "post": {
+        "tags": [
+          "features"
+        ],
+        "summary": "Add a feature (entitlement) to a product",
+        "operationId": "create_feature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeatureV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/products/{id}/features/{featureId}": {
+      "patch": {
+        "tags": [
+          "features"
+        ],
+        "summary": "Rename a feature",
+        "operationId": "update_feature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "featureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "delete": {
+        "tags": [
+          "features"
+        ],
+        "summary": "Delete a feature (also removes it from licenses)",
+        "operationId": "delete_feature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "featureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/customers": {
+      "get": {
+        "tags": [
+          "customers"
+        ],
+        "summary": "List customers",
+        "operationId": "list_customers",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startingAfter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "post": {
+        "tags": [
+          "customers"
+        ],
+        "summary": "Create a customer",
+        "operationId": "create_customer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/customers/{id}": {
+      "get": {
+        "tags": [
+          "customers"
+        ],
+        "summary": "Get a customer",
+        "operationId": "get_customer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "patch": {
+        "tags": [
+          "customers"
+        ],
+        "summary": "Update a customer (JSON merge patch)",
+        "operationId": "update_customer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "delete": {
+        "tags": [
+          "customers"
+        ],
+        "summary": "Delete a customer without licenses",
+        "operationId": "delete_customer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses": {
+      "get": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "List licenses (filters: productId, customerId, status, q, expiringWithinDays)",
+        "operationId": "list_licenses",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startingAfter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expiringWithinDays",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "post": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Create one or more licenses (quantity up to 50); returns a list",
+        "operationId": "create_licenses",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLicenseV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/{id}": {
+      "get": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Get a license",
+        "operationId": "get_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "patch": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Update a license (JSON merge patch; expiresAt null = perpetual)",
+        "operationId": "update_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "delete": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Delete a license that was never activated",
+        "operationId": "delete_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/{id}/revoke": {
+      "post": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Revoke a license (irreversible; devices are refused on their next refresh)",
+        "operationId": "revoke_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/{id}/suspend": {
+      "post": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Suspend a license (reversible)",
+        "operationId": "suspend_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/{id}/resume": {
+      "post": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Resume a suspended license",
+        "operationId": "resume_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/{id}/transfer": {
+      "post": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Move a license to another customer (active devices are unaffected)",
+        "operationId": "transfer_license",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferLicenseV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/bulk": {
+      "post": {
+        "tags": [
+          "licenses"
+        ],
+        "summary": "Bulk action on licenses: set_expiry, suspend, resume, delete (unused only)",
+        "operationId": "bulk_update_licenses",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkLicensesV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/licenses/{id}/activations": {
+      "get": {
+        "tags": [
+          "activations"
+        ],
+        "summary": "List a license's activations (devices)",
+        "operationId": "list_activations",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/activations/{id}": {
+      "get": {
+        "tags": [
+          "activations"
+        ],
+        "summary": "Get an activation",
+        "operationId": "get_activation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/activations/{id}/deactivate": {
+      "post": {
+        "tags": [
+          "activations"
+        ],
+        "summary": "Free a device's seat (the device is locked on its next refresh)",
+        "operationId": "deactivate_activation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/environment": {
+      "get": {
+        "tags": [
+          "environment"
+        ],
+        "summary": "Current organization, environment, role and balance",
+        "operationId": "get_environment",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/environment/public-key": {
+      "get": {
+        "tags": [
+          "environment"
+        ],
+        "summary": "The environment's license-signing public key (PEM), to embed in apps",
+        "operationId": "get_public_key",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Machine-readable events (same payloads as webhooks); type filter supports 'license.*'",
+        "operationId": "list_events",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startingAfter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/history": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Human-readable activity history (paged with 'before' = last id)",
+        "operationId": "list_history",
+        "parameters": [
+          {
+            "name": "licenseId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/overview": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "License and device counts for the environment",
+        "operationId": "get_overview",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/request-logs": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "API requests of the last 30 days",
+        "operationId": "list_request_logs",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    },
+    "/api/v2/api-keys": {
+      "get": {
+        "tags": [
+          "api-keys"
+        ],
+        "summary": "List API keys",
+        "operationId": "list_api_keys",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": false
+      },
+      "post": {
+        "tags": [
+          "api-keys"
+        ],
+        "summary": "Create an API key (Live keys only from the dashboard); the secret is shown once",
+        "operationId": "create_api_key",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiKeyV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    },
+    "/api/v2/api-keys/{id}": {
+      "delete": {
+        "tags": [
+          "api-keys"
+        ],
+        "summary": "Revoke an API key",
+        "operationId": "revoke_api_key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    },
+    "/api/v2/approvals/{id}": {
+      "get": {
+        "tags": [
+          "approvals"
+        ],
+        "summary": "Status of an approval request",
+        "operationId": "get_approval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/approvals/{id}/approve": {
+      "post": {
+        "tags": [
+          "approvals"
+        ],
+        "summary": "Approve (dashboard session only)",
+        "operationId": "approve_approval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    },
+    "/api/v2/approvals/{id}/reject": {
+      "post": {
+        "tags": [
+          "approvals"
+        ],
+        "summary": "Reject (dashboard session only)",
+        "operationId": "reject_approval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    },
+    "/api/v2/test/activate": {
+      "post": {
+        "tags": [
+          "docs"
+        ],
+        "summary": "End-to-end activation in Test with a simulated device, then frees the device",
+        "operationId": "test_activation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestActivationV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/docs/search": {
+      "get": {
+        "tags": [
+          "docs"
+        ],
+        "summary": "Search the documentation (for agents)",
+        "operationId": "search_docs",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/integration-code": {
+      "post": {
+        "tags": [
+          "docs"
+        ],
+        "summary": "Ready-to-paste integration code for an SDK, with this environment's public key",
+        "operationId": "generate_integration_code",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationCodeV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/webhook-endpoints": {
+      "get": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "List webhook endpoints",
+        "operationId": "list_webhook_endpoints",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "post": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Create a webhook endpoint; the signing secret (whsec_…) is shown once",
+        "operationId": "create_webhook_endpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookEndpointV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/webhook-endpoints/{id}": {
+      "get": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Get a webhook endpoint",
+        "operationId": "get_webhook_endpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "patch": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Update a webhook endpoint (url, eventTypes, enabled)",
+        "operationId": "update_webhook_endpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      },
+      "delete": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Delete a webhook endpoint",
+        "operationId": "delete_webhook_endpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/webhook-endpoints/{id}/rotate-secret": {
+      "post": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Rotate the signing secret (the old one also signs for 24 hours)",
+        "operationId": "rotate_webhook_secret",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/webhook-endpoints/{id}/test": {
+      "post": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Send a ping event to the endpoint",
+        "operationId": "test_webhook_endpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/webhook-endpoints/{id}/deliveries": {
+      "get": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Recent deliveries of an endpoint",
+        "operationId": "list_webhook_deliveries",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/webhook-deliveries/{id}/retry": {
+      "post": {
+        "tags": [
+          "webhooks"
+        ],
+        "summary": "Send a delivery again now",
+        "operationId": "retry_webhook_delivery",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/billing/balance": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Prepaid balance, days-left estimate and auto top-up settings",
+        "operationId": "get_balance",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/billing/usage": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Usage per day, environment and meter",
+        "operationId": "get_usage",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/billing/ledger": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Money movements: starting credit, top-ups, manual credits",
+        "operationId": "list_ledger",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/billing/top-ups": {
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Start a Stripe Checkout top-up (Owner)",
+        "operationId": "create_top_up",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopUpV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    },
+    "/api/v2/billing/auto-top-up": {
+      "put": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Automatic top-up settings (Owner)",
+        "operationId": "update_auto_top_up",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AutoTopUpV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": false,
+        "x-requires-approval": false,
+        "x-mcp": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivateRequest": {
+        "required": [
+          "licenseKey",
+          "product",
+          "fingerprint",
+          "machineName",
+          "appVersion"
+        ],
+        "type": "object",
+        "properties": {
+          "licenseKey": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "$ref": "#/components/schemas/MachineFingerprint"
+          },
+          "machineName": {
+            "type": "string"
+          },
+          "appVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "AutoTopUpV2": {
+        "required": [
+          "enabled",
+          "thresholdMicro",
+          "amountMicro"
+        ],
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "thresholdMicro": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "amountMicro": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "BulkLicensesV2": {
+        "required": [
+          "ids",
+          "action"
+        ],
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "action": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "clearExpiry": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "CreateApiKeyV2": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "isAgent": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateCustomerV2": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "metadata": { }
+        }
+      },
+      "CreateFeatureV2": {
+        "required": [
+          "code",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateLicenseV2": {
+        "required": [
+          "productId",
+          "customerId"
+        ],
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "licensee": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "expiresAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "maxActivations": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "isFloating": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "leaseMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "features": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": { },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CreateProductV2": {
+        "required": [
+          "code",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "offlineGraceDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "metadata": { }
+        }
+      },
+      "CreateWebhookEndpointV2": {
+        "required": [
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "eventTypes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DeactivateRequest": {
+        "required": [
+          "token",
+          "fingerprint"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "$ref": "#/components/schemas/MachineFingerprint"
+          }
+        }
+      },
+      "IntegrationCodeV2": {
+        "required": [
+          "language"
+        ],
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "productId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "productCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "style": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "MachineFingerprint": {
+        "required": [
+          "machineId",
+          "diskId",
+          "hostName",
+          "boardId"
+        ],
+        "type": "object",
+        "properties": {
+          "machineId": {
+            "type": "string"
+          },
+          "diskId": {
+            "type": "string"
+          },
+          "hostName": {
+            "type": "string"
+          },
+          "boardId": {
+            "type": "string"
+          },
+          "os": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RefreshRequest": {
+        "required": [
+          "token",
+          "fingerprint",
+          "appVersion"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "$ref": "#/components/schemas/MachineFingerprint"
+          },
+          "appVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "anomalies": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TestActivationV2": {
+        "type": "object",
+        "properties": {
+          "licenseKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "licenseId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "productId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "productCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "TopUpV2": {
+        "required": [
+          "amountMicro"
+        ],
+        "type": "object",
+        "properties": {
+          "amountMicro": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "TransferLicenseV2": {
+        "required": [
+          "customerId"
+        ],
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "http",
+        "description": "Secret or restricted API key (lr_test_…, lr_live_…, lr_rk_…) or a CLI/OAuth access token.",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKey": [ ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "client"
+    },
+    {
+      "name": "Codeo.Licensing.Api"
+    }
+  ]
+}
