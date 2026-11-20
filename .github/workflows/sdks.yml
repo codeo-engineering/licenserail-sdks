@@ -95,3 +95,18 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with: { php-version: '8.1', extensions: openssl, mbstring }
       - run: php tests/vectors.php
+
+  cli:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: cli } }
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with: { go-version: '1.21' }
+      - run: go vet ./...
+      - name: Build for every platform
+        run: |
+          for t in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64; do
+            GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go build -o /tmp/licenserail-${t%/*}-${t#*/} .
+          done
+      - run: /tmp/licenserail-linux-amd64 --help
