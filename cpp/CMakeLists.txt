@@ -10,6 +10,8 @@ include(FetchContent)
 # mbedTLS (Apache-2.0): ECDSA P-256 verify and SHA-256, small and easy to embed in plugins.
 set(ENABLE_PROGRAMS OFF CACHE BOOL "" FORCE)
 set(ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+# mbedTLS builds its TLS library too; newer compilers warn in it, and those warnings are not ours to fail on.
+set(MBEDTLS_FATAL_WARNINGS OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(mbedtls GIT_REPOSITORY https://github.com/Mbed-TLS/mbedtls.git GIT_TAG v3.6.2 GIT_SHALLOW TRUE)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(mbedtls json)
