@@ -9,7 +9,7 @@ description = "LicenseRail client SDK: offline license verification, activation,
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Codeo Solutions Limited" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["cryptography>=41"]
 
 [tool.hatch.build.targets.wheel]
