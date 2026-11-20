@@ -32,7 +32,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -57,7 +57,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -82,7 +82,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -107,7 +107,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -132,7 +132,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -157,7 +157,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -182,7 +182,7 @@
             "description": "OK"
           }
         },
-        "security": [],
+        "security": [ ],
         "x-mcp": false
       }
     },
@@ -1415,7 +1415,7 @@
             "description": "OK"
           }
         },
-        "x-billable": true,
+        "x-billable": false,
         "x-requires-approval": false,
         "x-mcp": true
       }
@@ -1442,7 +1442,7 @@
             "description": "OK"
           }
         },
-        "x-billable": true,
+        "x-billable": false,
         "x-requires-approval": false,
         "x-mcp": true
       }
@@ -1992,7 +1992,7 @@
               "string"
             ]
           },
-          "metadata": {}
+          "metadata": { }
         }
       },
       "CreateFeatureV2": {
@@ -2075,7 +2075,7 @@
               "type": "string"
             }
           },
-          "metadata": {},
+          "metadata": { },
           "notes": {
             "type": [
               "null",
@@ -2115,7 +2115,7 @@
             ],
             "format": "int32"
           },
-          "metadata": {}
+          "metadata": { }
         }
       },
       "CreateWebhookEndpointV2": {
@@ -2309,7 +2309,7 @@
   },
   "security": [
     {
-      "apiKey": []
+      "apiKey": [ ]
     }
   ],
   "tags": [
