@@ -39,6 +39,8 @@ final class License
 final class LicenseClient
 {
     private string $server;
+    /** Your organization's slug from the dashboard (fixed for life; part of every device identity). */
+    private string $vendor;
     private string $product;
     private string $publicKey;
     private string $dir;
@@ -48,15 +50,16 @@ final class LicenseClient
     private int $timeout;
     public ?string $lastServerMessage = null;
 
-    /** @param array{serverUrl:string,product:string,publicKeyPem:string,storageDir?:string,appVersion?:string,refreshOnStartup?:bool,fingerprint?:array,siteUrl?:string,timeout?:int} $options */
+    /** @param array{serverUrl:string,vendor:string,product:string,publicKeyPem:string,storageDir?:string,appVersion?:string,refreshOnStartup?:bool,fingerprint?:array,siteUrl?:string,timeout?:int} $options */
     public function __construct(array $options)
     {
-        foreach (['serverUrl', 'product', 'publicKeyPem'] as $k) {
+        foreach (['serverUrl', 'vendor', 'product', 'publicKeyPem'] as $k) {
             if (empty($options[$k])) {
                 throw new \InvalidArgumentException("$k is required");
             }
         }
         $this->server = rtrim($options['serverUrl'], '/');
+        $this->vendor = $options['vendor'];
         $this->product = $options['product'];
         $this->publicKey = $options['publicKeyPem'];
         $this->appVersion = $options['appVersion'] ?? null;
@@ -81,9 +84,9 @@ final class LicenseClient
             @file_put_contents($installFile, $install);
         }
         return [
-            'machineId' => Licensing::hashComponent($this->product, 'machine', $install),
+            'machineId' => Licensing::hashComponent($this->vendor, $this->product, 'machine', $install),
             'diskId' => Licensing::UNAVAILABLE,
-            'hostName' => Licensing::hashComponent($this->product, 'host', $host),
+            'hostName' => Licensing::hashComponent($this->vendor, $this->product, 'host', $host),
             'boardId' => Licensing::UNAVAILABLE,
             'os' => 'linux',
         ];
@@ -221,7 +224,7 @@ final class LicenseClient
 
     private function mac(string $ms): string
     {
-        $key = hash('sha256', "codeo-run-history:{$this->product}:{$this->fingerprint['machineId']}:{$this->fingerprint['boardId']}", true);
+        $key = hash('sha256', "{$this->vendor}:run-history:{$this->product}:{$this->fingerprint['machineId']}:{$this->fingerprint['boardId']}", true);
         return strtoupper(substr(hash_hmac('sha256', $ms, $key), 0, 32));
     }
 

@@ -4,6 +4,7 @@
 //! use licenserail::{LicenseClient, Options};
 //! let mut client = LicenseClient::new(Options {
 //!     server_url: "https://api.licenserail.com".into(),
+//!     vendor: "acme".into(),
 //!     product: "my-app".into(),
 //!     public_key_pem: std::fs::read_to_string("public-key.pem").unwrap(),
 //!     ..Options::default()
@@ -151,11 +152,12 @@ pub fn verify_token(token: &str, key: &VerifyingKey) -> Option<Payload> {
     serde_json::from_slice(&b64(parts[0])?).ok()
 }
 
-/// hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw)))); blank gives "none".
-pub fn hash_component(product: &str, part: &str, raw: Option<&str>) -> String {
+/// hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank gives "none".
+/// `vendor` is the organization's slug (fixed for life).
+pub fn hash_component(vendor: &str, product: &str, part: &str, raw: Option<&str>) -> String {
     match raw.map(str::trim) {
         None | Some("") => UNAVAILABLE.to_string(),
-        Some(t) => hex::encode(Sha256::digest(format!("codeo:{product}:{part}:{}", t.to_uppercase()).as_bytes())),
+        Some(t) => hex::encode(Sha256::digest(format!("{vendor}:{product}:{part}:{}", t.to_uppercase()).as_bytes())),
     }
 }
 
@@ -211,8 +213,8 @@ pub fn evaluate(payload: Option<&Payload>, product: &str, machine: &Fingerprint,
     Status::Valid
 }
 
-pub(crate) fn history_mac(ms: &str, product: &str, m: &Fingerprint) -> String {
-    let key = Sha256::digest(format!("codeo-run-history:{product}:{}:{}", m.machine_id, m.board_id).as_bytes());
+pub(crate) fn history_mac(ms: &str, vendor: &str, product: &str, m: &Fingerprint) -> String {
+    let key = Sha256::digest(format!("{vendor}:run-history:{product}:{}:{}", m.machine_id, m.board_id).as_bytes());
     let mut mac = Hmac::<Sha256>::new_from_slice(&key).expect("any key length");
     mac.update(ms.as_bytes());
     hex::encode_upper(mac.finalize().into_bytes())[..32].to_string()

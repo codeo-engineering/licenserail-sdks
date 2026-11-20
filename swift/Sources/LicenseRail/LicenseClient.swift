@@ -23,6 +23,8 @@ public struct CheckResult {
 public final class LicenseClient {
     public struct Options {
         public var serverURL: URL
+        /// Your organization's slug from the dashboard (fixed for life; part of every device identity).
+        public var vendor: String
         public var product: String
         public var appVersion: String?
         public var publicKeyPEM: String
@@ -30,9 +32,9 @@ public final class LicenseClient {
         public var refreshOnStartup = false
         public var fingerprint: Fingerprint?
 
-        public init(serverURL: URL, product: String, appVersion: String? = nil, publicKeyPEM: String, storageDirectory: URL? = nil,
+        public init(serverURL: URL, vendor: String, product: String, appVersion: String? = nil, publicKeyPEM: String, storageDirectory: URL? = nil,
                     refreshOnStartup: Bool = false, fingerprint: Fingerprint? = nil) {
-            self.serverURL = serverURL; self.product = product; self.appVersion = appVersion; self.publicKeyPEM = publicKeyPEM
+            self.serverURL = serverURL; self.vendor = vendor; self.product = product; self.appVersion = appVersion; self.publicKeyPEM = publicKeyPEM
             self.storageDirectory = storageDirectory; self.refreshOnStartup = refreshOnStartup; self.fingerprint = fingerprint
         }
     }
@@ -40,7 +42,7 @@ public final class LicenseClient {
     private let options: Options
     private let key: P256.Signing.PublicKey
     private let dir: URL
-    private lazy var fp: Fingerprint = options.fingerprint ?? LicenseClient.collectFingerprint(product: options.product)
+    private lazy var fp: Fingerprint = options.fingerprint ?? LicenseClient.collectFingerprint(vendor: options.vendor, product: options.product)
     public private(set) var lastServerMessage: String?
 
     public init(options: Options) throws {
@@ -157,12 +159,12 @@ public final class LicenseClient {
 
     private func encodeHistory(_ at: Date) -> String {
         let ms = String(Int64(at.timeIntervalSince1970 * 1000))
-        return "\(ms).\(Licensing.historyMac(ms, product: options.product, machine: fp))"
+        return "\(ms).\(Licensing.historyMac(ms, vendor: options.vendor, product: options.product, machine: fp))"
     }
 
     private func decodeHistory(_ v: String?) -> Date? {
         guard let parts = v?.split(separator: "."), parts.count == 2, let ms = Int64(parts[0]),
-              String(parts[1]) == Licensing.historyMac(String(parts[0]), product: options.product, machine: fp) else { return nil }
+              String(parts[1]) == Licensing.historyMac(String(parts[0]), vendor: options.vendor, product: options.product, machine: fp) else { return nil }
         return Date(timeIntervalSince1970: Double(ms) / 1000)
     }
 
@@ -178,21 +180,21 @@ public final class LicenseClient {
     private func delete(_ name: String) { try? FileManager.default.removeItem(at: dir.appendingPathComponent(name)) }
 
     /// macOS: hardware serial (machine), IOPlatformUUID (board), host name. iOS: identifierForVendor (no hardware ids).
-    public static func collectFingerprint(product: String) -> Fingerprint {
+    public static func collectFingerprint(vendor: String, product: String) -> Fingerprint {
         #if os(macOS)
         func ioreg(_ key: String) -> String? {
             let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
             defer { IOObjectRelease(service) }
             return IORegistryEntryCreateCFProperty(service, key as CFString, kCFAllocatorDefault, 0)?.takeRetainedValue() as? String
         }
-        return Fingerprint(machineId: Licensing.hashComponent(product: product, part: "machine", raw: ioreg(kIOPlatformSerialNumberKey)),
+        return Fingerprint(machineId: Licensing.hashComponent(vendor: vendor, product: product, part: "machine", raw: ioreg(kIOPlatformSerialNumberKey)),
                            diskId: Licensing.unavailable,
-                           hostName: Licensing.hashComponent(product: product, part: "host", raw: ProcessInfo.processInfo.hostName),
-                           boardId: Licensing.hashComponent(product: product, part: "board", raw: ioreg(kIOPlatformUUIDKey)), os: "macos")
+                           hostName: Licensing.hashComponent(vendor: vendor, product: product, part: "host", raw: ProcessInfo.processInfo.hostName),
+                           boardId: Licensing.hashComponent(vendor: vendor, product: product, part: "board", raw: ioreg(kIOPlatformUUIDKey)), os: "macos")
         #elseif canImport(UIKit)
-        let vendor = UIDevice.current.identifierForVendor?.uuidString
-        return Fingerprint(machineId: Licensing.hashComponent(product: product, part: "machine", raw: vendor), diskId: Licensing.unavailable,
-                           hostName: Licensing.hashComponent(product: product, part: "host", raw: UIDevice.current.model),
+        let installId = UIDevice.current.identifierForVendor?.uuidString
+        return Fingerprint(machineId: Licensing.hashComponent(vendor: vendor, product: product, part: "machine", raw: installId), diskId: Licensing.unavailable,
+                           hostName: Licensing.hashComponent(vendor: vendor, product: product, part: "host", raw: UIDevice.current.model),
                            boardId: Licensing.unavailable, os: "ios")
         #else
         return Fingerprint(machineId: Licensing.unavailable, diskId: Licensing.unavailable, hostName: Licensing.unavailable, boardId: Licensing.unavailable)

@@ -82,11 +82,11 @@ def verify_token(token: str, public_key: Any) -> Optional[dict]:
         return None
 
 
-def hash_component(product: str, part: str, raw: Optional[str]) -> str:
-    """hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw)))); blank -> "none"."""
+def hash_component(vendor: str, product: str, part: str, raw: Optional[str]) -> str:
+    """vendor = the organization's slug (fixed for life). hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank -> "none"."""
     if raw is None or raw.strip() == "":
         return UNAVAILABLE
-    return hashlib.sha256(f"codeo:{product}:{part}:{raw.strip().upper()}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{vendor}:{product}:{part}:{raw.strip().upper()}".encode("utf-8")).hexdigest()
 
 
 def _available(v: Optional[str]) -> bool:
@@ -138,22 +138,22 @@ def evaluate(payload: Optional[dict], product: str, machine: Fingerprint, now: d
     return "Valid"
 
 
-def _history_mac(ms: str, product: str, machine: Fingerprint) -> str:
-    key = hashlib.sha256(f"codeo-run-history:{product}:{machine.machine_id}:{machine.board_id}".encode()).digest()
+def _history_mac(ms: str, vendor: str, product: str, machine: Fingerprint) -> str:
+    key = hashlib.sha256(f"{vendor}:run-history:{product}:{machine.machine_id}:{machine.board_id}".encode()).digest()
     return hmac.new(key, ms.encode(), hashlib.sha256).hexdigest()[:32].upper()
 
 
-def encode_run_history(at: datetime, product: str, machine: Fingerprint) -> str:
+def encode_run_history(at: datetime, vendor: str, product: str, machine: Fingerprint) -> str:
     ms = str(int(at.timestamp() * 1000))
-    return f"{ms}.{_history_mac(ms, product, machine)}"
+    return f"{ms}.{_history_mac(ms, vendor, product, machine)}"
 
 
-def decode_run_history(value: Optional[str], product: str, machine: Fingerprint) -> Optional[datetime]:
+def decode_run_history(value: Optional[str], vendor: str, product: str, machine: Fingerprint) -> Optional[datetime]:
     if not value:
         return None
     parts = value.strip().split(".")
     if len(parts) != 2 or not re.fullmatch(r"\d{1,15}", parts[0]):
         return None
-    if not hmac.compare_digest(parts[1], _history_mac(parts[0], product, machine)):
+    if not hmac.compare_digest(parts[1], _history_mac(parts[0], vendor, product, machine)):
         return None
     return datetime.fromtimestamp(int(parts[0]) / 1000, tz=timezone.utc)

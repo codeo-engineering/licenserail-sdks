@@ -30,7 +30,7 @@ final class VectorTests: XCTestCase {
 
     func testFingerprint() throws {
         for case let c as [String: Any] in try load("fingerprint.json")["cases"] as! [Any] {
-            XCTAssertEqual(Licensing.hashComponent(product: c["product"] as! String, part: c["part"] as! String, raw: c["raw"] as? String), c["hash"] as! String)
+            XCTAssertEqual(Licensing.hashComponent(vendor: c["vendor"] as! String, product: c["product"] as! String, part: c["part"] as! String, raw: c["raw"] as? String), c["hash"] as! String)
         }
     }
 

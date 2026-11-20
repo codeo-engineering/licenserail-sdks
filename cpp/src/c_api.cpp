@@ -9,11 +9,12 @@ struct licenserail_client {
 
 extern "C" {
 
-licenserail_client* licenserail_create(const char* server_url, const char* product, const char* public_key_pem, const char* app_version,
+licenserail_client* licenserail_create(const char* server_url, const char* vendor, const char* product, const char* public_key_pem, const char* app_version,
                                        const char* storage_dir) {
-    if (!server_url || !product || !public_key_pem) return nullptr;
+    if (!server_url || !vendor || !product || !public_key_pem) return nullptr;
     licenserail::Options o;
     o.server_url = server_url;
+    o.vendor = vendor;
     o.product = product;
     o.public_key_pem = public_key_pem;
     if (app_version) o.app_version = app_version;

@@ -16,8 +16,10 @@ import (
 	"time"
 )
 
-// Options configure a Client. ServerURL, Product and PublicKeyPEM are required.
+// Options configure a Client. ServerURL, Vendor, Product and PublicKeyPEM are required.
 type Options struct {
+	// Vendor is your organization's slug from the dashboard (fixed for life; part of every device identity).
+	Vendor string
 	ServerURL        string
 	Product          string
 	PublicKeyPEM     string
@@ -64,8 +66,8 @@ type Client struct {
 
 // NewClient validates the options and loads the public key.
 func NewClient(o Options) (*Client, error) {
-	if o.ServerURL == "" || o.Product == "" || o.PublicKeyPEM == "" {
-		return nil, errors.New("licenserail: ServerURL, Product and PublicKeyPEM are required")
+	if o.ServerURL == "" || o.Vendor == "" || o.Product == "" || o.PublicKeyPEM == "" {
+		return nil, errors.New("licenserail: ServerURL, Vendor, Product and PublicKeyPEM are required")
 	}
 	key, err := ParsePublicKey(o.PublicKeyPEM)
 	if err != nil {
@@ -97,7 +99,7 @@ func (c *Client) fingerprint() Fingerprint {
 		if c.opts.Fingerprint != nil {
 			c.fp = c.opts.Fingerprint()
 		} else {
-			c.fp = CollectFingerprint(c.opts.Product)
+			c.fp = CollectFingerprint(c.opts.Vendor, c.opts.Product)
 		}
 	})
 	return c.fp
@@ -113,11 +115,11 @@ func (c *Client) EvaluateLocal() CheckResult {
 		return CheckResult{Status: Missing}
 	}
 	p := VerifyToken(token, c.key)
-	last := decodeHistory(c.read("license.seen"), c.opts.Product, c.fingerprint())
+	last := decodeHistory(c.read("license.seen"), c.opts.Vendor, c.opts.Product, c.fingerprint())
 	now := c.now()
 	s := Evaluate(p, c.opts.Product, c.fingerprint(), now, last)
 	if (s == Valid || s == Expired || s == OfflineTooLong) && (last == nil || now.After(*last)) {
-		c.write("license.seen", encodeHistory(now, c.opts.Product, c.fingerprint()))
+		c.write("license.seen", encodeHistory(now, c.opts.Vendor, c.opts.Product, c.fingerprint()))
 	}
 	return CheckResult{Status: s, License: p}
 }
@@ -308,7 +310,7 @@ func (c *Client) saveIfValid(token string) bool {
 		return false
 	}
 	c.write("license.lic", token)
-	c.write("license.seen", encodeHistory(c.now(), c.opts.Product, c.fingerprint()))
+	c.write("license.seen", encodeHistory(c.now(), c.opts.Vendor, c.opts.Product, c.fingerprint()))
 	return true
 }
 

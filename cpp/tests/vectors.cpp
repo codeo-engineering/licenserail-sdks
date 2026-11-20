@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     }
     for (const auto& c : load(dir, "fingerprint.json")["cases"]) {
         std::optional<std::string> raw = c["raw"].is_null() ? std::nullopt : std::optional<std::string>(c["raw"].get<std::string>());
-        check(hash_component(c["product"], c["part"], raw) == c["hash"].get<std::string>(), "hash " + c["raw"].dump());
+        check(hash_component(c["vendor"], c["product"], c["part"], raw) == c["hash"].get<std::string>(), "hash " + c["raw"].dump());
     }
     for (const auto& c : load(dir, "match.json")["cases"])
         check(fp(c["registered"]).matches(fp(c["presented"])) == c["matches"].get<bool>(), "match " + c["name"].get<std::string>());

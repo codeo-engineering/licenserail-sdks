@@ -7,7 +7,7 @@ pip install licenserail
 ```python
 from licenserail import LicenseClient
 
-client = LicenseClient(server_url="https://api.licenserail.com", product="my-app", public_key_pem=PUBLIC_KEY)
+client = LicenseClient(server_url="https://api.licenserail.com", vendor="acme", product="my-app", public_key_pem=PUBLIC_KEY)
 result = client.check()           # offline check, refreshed online when due
 if not result.valid:
     client.activate(license_key)

@@ -78,11 +78,12 @@ public final class Licensing {
         }
     }
 
-    public static String hashComponent(String product, String part, String raw) {
+    /** hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); vendor = the organization's slug (fixed for life). */
+    public static String hashComponent(String vendor, String product, String part, String raw) {
         if (raw == null || raw.strip().isEmpty()) return UNAVAILABLE;
         try {
             byte[] h = MessageDigest.getInstance("SHA-256")
-                .digest(("codeo:" + product + ":" + part + ":" + raw.strip().toUpperCase(Locale.ROOT)).getBytes(StandardCharsets.UTF_8));
+                .digest((vendor + ":" + product + ":" + part + ":" + raw.strip().toUpperCase(Locale.ROOT)).getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(h);
         } catch (Exception e) {
             throw new IllegalStateException(e);

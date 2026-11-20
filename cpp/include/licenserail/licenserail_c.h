@@ -16,7 +16,7 @@ typedef enum {
 } licenserail_status;
 
 /* Returns NULL on invalid arguments. storage_dir may be NULL (per-user default). */
-licenserail_client* licenserail_create(const char* server_url, const char* product, const char* public_key_pem, const char* app_version,
+licenserail_client* licenserail_create(const char* server_url, const char* vendor, const char* product, const char* public_key_pem, const char* app_version,
                                        const char* storage_dir);
 void licenserail_destroy(licenserail_client* client);
 

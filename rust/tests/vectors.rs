@@ -32,7 +32,7 @@ fn tokens() {
 #[test]
 fn fingerprint_hashing() {
     for c in load("fingerprint.json")["cases"].as_array().unwrap() {
-        let got = hash_component(c["product"].as_str().unwrap(), c["part"].as_str().unwrap(), c["raw"].as_str());
+        let got = hash_component(c["vendor"].as_str().unwrap(), c["product"].as_str().unwrap(), c["part"].as_str().unwrap(), c["raw"].as_str());
         assert_eq!(got, c["hash"].as_str().unwrap(), "{}", c);
     }
 }

@@ -16,7 +16,7 @@ fn read(path: &str) -> Option<String> {
 }
 
 /// Hashes this device's identifiers for `product` (Windows, macOS, Linux).
-pub fn collect_fingerprint(product: &str) -> Fingerprint {
+pub fn collect_fingerprint(vendor: &str, product: &str) -> Fingerprint {
     let host = std::env::var("COMPUTERNAME").ok().or_else(|| read("/etc/hostname")).or_else(|| run("hostname", &[]).map(|s| s.trim().to_string()));
     let (machine, disk, board, os): (Option<String>, Option<String>, Option<String>, &str) = if cfg!(windows) {
         let reg = run("reg", &["query", r"HKLM\SOFTWARE\Microsoft\Cryptography", "/v", "MachineGuid", "/reg:64"]).unwrap_or_default();
@@ -34,10 +34,10 @@ pub fn collect_fingerprint(product: &str) -> Fingerprint {
     };
     let board = board.filter(|b| !b.replace('-', "").chars().all(|c| c == '0' || c == 'F' || c == 'f'));
     Fingerprint {
-        machine_id: hash_component(product, "machine", machine.as_deref()),
-        disk_id: hash_component(product, "disk", disk.as_deref()),
-        host_name: hash_component(product, "host", host.as_deref()),
-        board_id: hash_component(product, "board", board.as_deref()),
+        machine_id: hash_component(vendor, product, "machine", machine.as_deref()),
+        disk_id: hash_component(vendor, product, "disk", disk.as_deref()),
+        host_name: hash_component(vendor, product, "host", host.as_deref()),
+        board_id: hash_component(vendor, product, "board", board.as_deref()),
         os: Some(os.to_string()),
     }
 }

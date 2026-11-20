@@ -56,7 +56,7 @@ static std::optional<std::string> read_file(const std::string& path) {
     return s.empty() ? std::nullopt : std::optional<std::string>(s);
 }
 
-Fingerprint collect_fingerprint(const std::string& product) {
+Fingerprint collect_fingerprint(const std::string& vendor, const std::string& product) {
     std::optional<std::string> machine, disk, host, board;
     std::string os;
 #ifdef _WIN32
@@ -80,8 +80,8 @@ Fingerprint collect_fingerprint(const std::string& product) {
     host = read_file("/etc/hostname");
 #endif
     if (board && std::regex_match(std::regex_replace(*board, std::regex("-"), ""), std::regex("[0Ff]*"))) board.reset();
-    return {hash_component(product, "machine", machine), hash_component(product, "disk", disk), hash_component(product, "host", host),
-            hash_component(product, "board", board), os};
+    return {hash_component(vendor, product, "machine", machine), hash_component(vendor, product, "disk", disk), hash_component(vendor, product, "host", host),
+            hash_component(vendor, product, "board", board), os};
 }
 
 #ifdef LICENSERAIL_WITH_CURL
@@ -133,7 +133,7 @@ Client::Client(Options o) : options_(std::move(o)) {
 }
 
 const Fingerprint& Client::fp() {
-    if (!fp_) fp_ = collect_fingerprint(options_.product);
+    if (!fp_) fp_ = collect_fingerprint(options_.vendor, options_.product);
     return *fp_;
 }
 
@@ -145,7 +145,7 @@ static json fp_json(const Fingerprint& f) {
 
 std::string Client::encode_history(int64_t ms) const {
     std::string s = std::to_string(ms);
-    return s + "." + hmac_sha256_hex_upper("codeo-run-history:" + options_.product + ":" + fp_->machine_id + ":" + fp_->board_id, s).substr(0, 32);
+    return s + "." + hmac_sha256_hex_upper(options_.vendor + ":run-history:" + options_.product + ":" + fp_->machine_id + ":" + fp_->board_id, s).substr(0, 32);
 }
 
 std::optional<int64_t> Client::decode_history(const std::string& v) const {

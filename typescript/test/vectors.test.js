@@ -15,7 +15,7 @@ test('tokens', () => {
 })
 
 test('fingerprint hashing', () => {
-  for (const c of load('fingerprint.json').cases) assert.equal(hashComponent(c.product, c.part, c.raw), c.hash, `${c.part}:${c.raw}`)
+  for (const c of load('fingerprint.json').cases) assert.equal(hashComponent(c.vendor, c.product, c.part, c.raw), c.hash, `${c.vendor}:${c.part}:${c.raw}`)
 })
 
 test('matching', () => {

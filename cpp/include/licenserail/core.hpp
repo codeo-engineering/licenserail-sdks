@@ -38,9 +38,10 @@ struct Payload {
 /// Verifies ECDSA P-256 / SHA-256 (IEEE P1363 r||s) over the ASCII encoded body with a SubjectPublicKeyInfo PEM.
 std::optional<Payload> verify_token(const std::string& token, const std::string& public_key_pem);
 
-/// hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw)))); empty gives "none".
+/// hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); empty gives "none".
+/// vendor is the organization's slug (fixed for life).
 /// Uppercasing covers ASCII, Latin-1 and Latin Extended-A, like the other SDKs for typical host names.
-std::string hash_component(const std::string& product, const std::string& part, const std::optional<std::string>& raw);
+std::string hash_component(const std::string& vendor, const std::string& product, const std::string& part, const std::optional<std::string>& raw);
 
 /// The offline check. Times are Unix milliseconds; last_seen empty = run history missing.
 Status evaluate(const std::optional<Payload>& payload, const std::string& product, const Fingerprint& machine, int64_t now_ms,

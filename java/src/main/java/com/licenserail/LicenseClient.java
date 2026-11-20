@@ -60,7 +60,7 @@ public final class LicenseClient {
         this.http = HttpClient.newBuilder().connectTimeout(options.timeout()).build();
         this.dir = options.storageDir() != null ? options.storageDir()
             : Path.of(System.getProperty("user.home"), ".licenserail", options.product());
-        this.fingerprintSupplier = options.fingerprint() != null ? options.fingerprint() : () -> Fingerprints.collect(options.product());
+        this.fingerprintSupplier = options.fingerprint() != null ? options.fingerprint() : () -> Fingerprints.collect(options.vendor(), options.product());
     }
 
     private Licensing.Fingerprint fingerprint() { if (fp == null) fp = fingerprintSupplier.get(); return fp; }
@@ -185,7 +185,7 @@ public final class LicenseClient {
     private String mac(String ms) {
         try {
             byte[] k = MessageDigest.getInstance("SHA-256").digest(
-                ("codeo-run-history:" + options.product() + ":" + fingerprint().machineId + ":" + fingerprint().boardId).getBytes(StandardCharsets.UTF_8));
+                (options.vendor() + ":run-history:" + options.product() + ":" + fingerprint().machineId + ":" + fingerprint().boardId).getBytes(StandardCharsets.UTF_8));
             Mac m = Mac.getInstance("HmacSHA256");
             m.init(new SecretKeySpec(k, "HmacSHA256"));
             return HexFormat.of().withUpperCase().formatHex(m.doFinal(ms.getBytes(StandardCharsets.US_ASCII))).substring(0, 32);

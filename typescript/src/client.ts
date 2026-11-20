@@ -20,6 +20,8 @@ export interface LicenseClientOptions {
   serverUrl: string
   /** The product code from the dashboard. */
   product: string
+  /** Your organization's slug from the dashboard (fixed for life; part of every device identity). */
+  vendor: string
   /** The environment's public key (PEM); verifies license files offline. */
   publicKeyPem: string
   /** Where the license file and run history live; default: a per-user folder. */
@@ -83,7 +85,7 @@ const messages: Record<LicenseStatus, string> = {
  * deactivation and floating leases. Never put an API key in client code; this class needs only the public key.
  */
 export class LicenseClient {
-  private readonly options: Required<Pick<LicenseClientOptions, 'serverUrl' | 'product' | 'timeoutMs'>> & LicenseClientOptions
+  private readonly options: Required<Pick<LicenseClientOptions, 'serverUrl' | 'vendor' | 'product' | 'timeoutMs'>> & LicenseClientOptions
   private readonly key: KeyObject
   private readonly dir: string
   private fp: Fingerprint | null = null
@@ -93,14 +95,15 @@ export class LicenseClient {
   lastServerMessage: string | null = null
 
   constructor(options: LicenseClientOptions) {
-    if (!options.serverUrl || !options.product || !options.publicKeyPem) throw new Error('serverUrl, product and publicKeyPem are required.')
+    if (!options.serverUrl || !options.vendor || !options.product || !options.publicKeyPem)
+      throw new Error('serverUrl, vendor, product and publicKeyPem are required.')
     this.options = { timeoutMs: 10_000, ...options, serverUrl: options.serverUrl.replace(/\/+$/, '') }
     this.key = importPublicKey(options.publicKeyPem)
     this.dir = options.storageDir ?? defaultStorageDir(options.product)
   }
 
   private now(): Date { return this.options.now?.() ?? new Date() }
-  private fingerprint(): Fingerprint { return (this.fp ??= this.options.fingerprint?.() ?? collectFingerprint(this.options.product)) }
+  private fingerprint(): Fingerprint { return (this.fp ??= this.options.fingerprint?.() ?? collectFingerprint(this.options.vendor, this.options.product)) }
   private get tokenPath() { return join(this.dir, 'license.lic') }
   private get historyPath() { return join(this.dir, 'license.seen') }
 
@@ -115,11 +118,11 @@ export class LicenseClient {
     const token = this.read(this.tokenPath)
     if (!token) return { status: 'Missing', valid: false, license: null }
     const payload = verifyToken(token, this.key)
-    const lastSeen = decodeRunHistory(this.read(this.historyPath), this.options.product, this.fingerprint())
+    const lastSeen = decodeRunHistory(this.read(this.historyPath), this.options.vendor, this.options.product, this.fingerprint())
     const now = this.now()
     const status = evaluate(payload, this.options.product, this.fingerprint(), now, lastSeen)
     if ((status === 'Valid' || status === 'Expired' || status === 'OfflineTooLong') && (!lastSeen || now > lastSeen))
-      this.write(this.historyPath, encodeRunHistory(now, this.options.product, this.fingerprint()))
+      this.write(this.historyPath, encodeRunHistory(now, this.options.vendor, this.options.product, this.fingerprint()))
     if (payload?.test && !this.warnedTest) {
       this.warnedTest = true
       console.warn('[licenserail] Test license: not for production use.')
@@ -247,7 +250,7 @@ export class LicenseClient {
     const payload = verifyToken(token, this.key)
     if (!payload || payload.product.toLowerCase() !== this.options.product.toLowerCase()) return false
     this.write(this.tokenPath, token)
-    this.write(this.historyPath, encodeRunHistory(this.now(), this.options.product, this.fingerprint()))
+    this.write(this.historyPath, encodeRunHistory(this.now(), this.options.vendor, this.options.product, this.fingerprint()))
     return true
   }
 

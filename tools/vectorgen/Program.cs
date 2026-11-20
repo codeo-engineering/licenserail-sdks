@@ -20,8 +20,8 @@ using ECDsa other = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 string publicPem = key.ExportSubjectPublicKeyInfoPem();
 
 var t0 = new DateTimeOffset(2026, 11, 20, 10, 0, 0, TimeSpan.Zero);
-var fp = new MachineFingerprint(Hash("demo-app", "machine", "MACHINE-1"), Hash("demo-app", "disk", "1A2B3C4D"),
-    Hash("demo-app", "host", "DESKTOP-01"), Hash("demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"));
+var fp = new MachineFingerprint(Hash("acme", "demo-app", "machine", "MACHINE-1"), Hash("acme", "demo-app", "disk", "1A2B3C4D"),
+    Hash("acme", "demo-app", "host", "DESKTOP-01"), Hash("acme", "demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"));
 
 LicensePayload V1(Action<LicensePayloadBuilder>? edit = null)
 {
@@ -96,23 +96,24 @@ var tokens = new
 Write("tokens.json", tokens);
 
 // Fingerprint hashing.
-var raws = new (string Product, string Part, string? Raw)[]
+var raws = new (string Vendor, string Product, string Part, string? Raw)[]
 {
-    ("demo-app", "machine", "6f1a7e2c-3b4d-4e5f-8a9b-0c1d2e3f4a5b"),
-    ("demo-app", "disk", "1A2B3C4D"),
-    ("demo-app", "host", "desktop-01"),
-    ("demo-app", "host", "  Desktop-01  "),
-    ("demo-app", "board", " 4c4c4544-0042-3510-8048-b4c04f4e4d32 "),
-    ("other-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
-    ("demo-app", "disk", ""),
-    ("demo-app", "disk", "   "),
-    ("demo-app", "board", null),
-    ("demo-app", "host", "çağatay-pc"),
+    ("acme", "demo-app", "machine", "6f1a7e2c-3b4d-4e5f-8a9b-0c1d2e3f4a5b"),
+    ("acme", "demo-app", "disk", "1A2B3C4D"),
+    ("acme", "demo-app", "host", "desktop-01"),
+    ("acme", "demo-app", "host", "  Desktop-01  "),
+    ("acme", "demo-app", "board", " 4c4c4544-0042-3510-8048-b4c04f4e4d32 "),
+    ("acme", "other-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
+    ("other-vendor", "demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
+    ("acme", "demo-app", "disk", ""),
+    ("acme", "demo-app", "disk", "   "),
+    ("acme", "demo-app", "board", null),
+    ("acme", "demo-app", "host", "çağatay-pc"),
 };
 Write("fingerprint.json", new
 {
-    description = "component = lowercase_hex(SHA256(utf8(\"codeo:\" + product + \":\" + part + \":\" + upper(trim(raw))))); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
-    cases = raws.Select(r => new { product = r.Product, part = r.Part, raw = r.Raw, hash = Hash(r.Product, r.Part, r.Raw) }).ToArray(),
+    description = "component = lowercase_hex(SHA256(utf8(vendor + \":\" + product + \":\" + part + \":\" + upper(trim(raw))))); vendor = the organization's slug (fixed for life); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
+    cases = raws.Select(r => new { vendor = r.Vendor, product = r.Product, part = r.Part, raw = r.Raw, hash = Hash(r.Vendor, r.Product, r.Part, r.Raw) }).ToArray(),
 });
 
 // Matching.
@@ -149,7 +150,7 @@ Write("match.json", new
 // Offline evaluation.
 string suspendedToken = LicenseToken.Sign(V1(b => b.P = b.P with { Suspended = true }), key);
 string expiringToken = LicenseToken.Sign(V1(b => b.P = b.P with { ExpiresAt = t0.AddDays(10) }), key);
-var otherMachine = new MachineFingerprint(Hash("demo-app", "machine", "X"), Hash("demo-app", "disk", "Y"), Hash("demo-app", "host", "Z"), Hash("demo-app", "board", "W"));
+var otherMachine = new MachineFingerprint(Hash("acme", "demo-app", "machine", "X"), Hash("acme", "demo-app", "disk", "Y"), Hash("acme", "demo-app", "host", "Z"), Hash("acme", "demo-app", "board", "W"));
 var evalCases = new (string Name, string Token, string Product, MachineFingerprint Machine, DateTimeOffset Now, DateTimeOffset? LastSeen)[]
 {
     ("valid", v1Token, "demo-app", fp, t0.AddHours(2), t0.AddHours(1)),
@@ -189,10 +190,10 @@ Console.WriteLine($"Wrote vectors to {outDir}");
 void Write(string name, object value) =>
     File.WriteAllText(Path.Combine(outDir, name), JsonSerializer.Serialize(value, indented).ReplaceLineEndings("\n") + "\n");
 
-static string Hash(string product, string part, string? raw)
+static string Hash(string vendor, string product, string part, string? raw)
 {
     if (string.IsNullOrWhiteSpace(raw)) return MachineFingerprint.Unavailable;
-    return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes($"codeo:{product}:{part}:{raw.Trim().ToUpperInvariant()}")));
+    return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes($"{vendor}:{product}:{part}:{raw.Trim().ToUpperInvariant()}")));
 }
 
 static JsonNode Payload(LicensePayload p) => JsonNode.Parse(JsonSerializer.Serialize(p, LicenseToken.JsonOptions))!;

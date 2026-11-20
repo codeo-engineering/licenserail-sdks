@@ -25,7 +25,7 @@ class Vectors(unittest.TestCase):
 
     def test_fingerprint(self):
         for c in load("fingerprint.json")["cases"]:
-            self.assertEqual(hash_component(c["product"], c["part"], c["raw"]), c["hash"], c)
+            self.assertEqual(hash_component(c["vendor"], c["product"], c["part"], c["raw"]), c["hash"], c)
 
     def test_match(self):
         for c in load("match.json")["cases"]:

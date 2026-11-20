@@ -199,13 +199,13 @@ static std::string upper_utf8(const std::string& in) {
     return out;
 }
 
-std::string hash_component(const std::string& product, const std::string& part, const std::optional<std::string>& raw) {
+std::string hash_component(const std::string& vendor, const std::string& product, const std::string& part, const std::optional<std::string>& raw) {
     if (!raw) return kUnavailable;
     std::string t = *raw;
     t.erase(0, t.find_first_not_of(" \t\r\n"));
     if (t.empty()) return kUnavailable;
     t.erase(t.find_last_not_of(" \t\r\n") + 1);
-    return sha256_hex("codeo:" + product + ":" + part + ":" + upper_utf8(t));
+    return sha256_hex(vendor + ":" + product + ":" + part + ":" + upper_utf8(t));
 }
 
 Status evaluate(const std::optional<Payload>& p, const std::string& product, const Fingerprint& machine, int64_t now, std::optional<int64_t> last_seen) {

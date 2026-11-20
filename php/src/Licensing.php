@@ -56,12 +56,13 @@ final class Licensing
         return is_array($payload) && isset($payload['fingerprint']) ? $payload : null;
     }
 
-    public static function hashComponent(string $product, string $part, ?string $raw): string
+    /** hex(SHA256(vendor . ':' . product . ':' . part . ':' . upper(trim(raw)))); \$vendor is the organization's slug (fixed for life). */
+    public static function hashComponent(string $vendor, string $product, string $part, ?string $raw): string
     {
         if ($raw === null || trim($raw) === '') {
             return self::UNAVAILABLE;
         }
-        return hash('sha256', "codeo:{$product}:{$part}:" . mb_strtoupper(trim($raw), 'UTF-8'));
+        return hash('sha256', "{$vendor}:{$product}:{$part}:" . mb_strtoupper(trim($raw), 'UTF-8'));
     }
 
     private static function available(?string $v): bool

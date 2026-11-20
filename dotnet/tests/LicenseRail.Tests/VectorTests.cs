@@ -39,7 +39,7 @@ public class VectorTests
     public void Fingerprint()
     {
         foreach (JsonNode c in Load("fingerprint.json")["cases"]!.AsArray()!)
-            Assert.Equal(c["hash"]!.GetValue<string>(), Fingerprints.Hash(c["product"]!.GetValue<string>(), c["part"]!.GetValue<string>(), c["raw"]?.GetValue<string>()));
+            Assert.Equal(c["hash"]!.GetValue<string>(), Fingerprints.Hash(c["vendor"]!.GetValue<string>(), c["product"]!.GetValue<string>(), c["part"]!.GetValue<string>(), c["raw"]?.GetValue<string>()));
     }
 
     [Fact]

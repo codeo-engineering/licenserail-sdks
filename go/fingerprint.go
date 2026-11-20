@@ -40,7 +40,7 @@ func readFirst(paths ...string) string {
 var placeholder = regexp.MustCompile(`(?i)^[0F]*$`)
 
 // CollectFingerprint hashes this device's identifiers for product (Windows, macOS, Linux).
-func CollectFingerprint(product string) Fingerprint {
+func CollectFingerprint(vendor, product string) Fingerprint {
 	host, _ := os.Hostname()
 	var machine, disk, board, osName string
 	switch runtime.GOOS {
@@ -77,10 +77,10 @@ func CollectFingerprint(product string) Fingerprint {
 		board = ""
 	}
 	return Fingerprint{
-		MachineID: HashComponent(product, "machine", machine),
-		DiskID:    HashComponent(product, "disk", disk),
-		HostName:  HashComponent(product, "host", host),
-		BoardID:   HashComponent(product, "board", board),
+		MachineID: HashComponent(vendor, product, "machine", machine),
+		DiskID:    HashComponent(vendor, product, "disk", disk),
+		HostName:  HashComponent(vendor, product, "host", host),
+		BoardID:   HashComponent(vendor, product, "board", board),
 		OS:        osName,
 	}
 }

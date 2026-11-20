@@ -66,6 +66,7 @@ func TestTokens(t *testing.T) {
 func TestFingerprint(t *testing.T) {
 	var v struct {
 		Cases []struct {
+			Vendor  string  `json:"vendor"`
 			Product string  `json:"product"`
 			Part    string  `json:"part"`
 			Raw     *string `json:"raw"`
@@ -78,7 +79,7 @@ func TestFingerprint(t *testing.T) {
 		if c.Raw != nil {
 			raw = *c.Raw
 		}
-		if got := HashComponent(c.Product, c.Part, raw); got != c.Hash {
+		if got := HashComponent(c.Vendor, c.Product, c.Part, raw); got != c.Hash {
 			t.Errorf("%s %q: %s, want %s", c.Part, raw, got, c.Hash)
 		}
 	}

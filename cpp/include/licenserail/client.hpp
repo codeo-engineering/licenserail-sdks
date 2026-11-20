@@ -20,6 +20,8 @@ using Transport = std::function<HttpResponse(const std::string& url, const std::
 
 struct Options {
     std::string server_url;
+    /// Your organization's slug from the dashboard (fixed for life; part of every device identity).
+    std::string vendor;
     std::string product;
     std::string public_key_pem;
     std::string app_version;
@@ -44,7 +46,7 @@ struct CheckResult {
 };
 
 /// Hashed device fingerprint (Windows, macOS, Linux).
-Fingerprint collect_fingerprint(const std::string& product);
+Fingerprint collect_fingerprint(const std::string& vendor, const std::string& product);
 
 class Client {
 public:

@@ -8,22 +8,25 @@ namespace LicenseRail;
 /// <summary>Collects the hashed device fingerprint on Windows, macOS and Linux. Raw values never leave the device.</summary>
 public static partial class Fingerprints
 {
-    /// <summary><c>hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw))))</c>; blank → "none".</summary>
-    public static string Hash(string product, string part, string? raw)
+    /// <summary>
+    /// <c>hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw))))</c>; blank → "none". <paramref name="vendor"/> is the
+    /// organization's slug (fixed for life).
+    /// </summary>
+    public static string Hash(string vendor, string product, string part, string? raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
             return MachineFingerprint.Unavailable;
-        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"codeo:{product}:{part}:{raw.Trim().ToUpperInvariant()}"))).ToLowerInvariant();
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{vendor}:{product}:{part}:{raw.Trim().ToUpperInvariant()}"))).ToLowerInvariant();
     }
 
-    public static MachineFingerprint Collect(string product)
+    public static MachineFingerprint Collect(string vendor, string product)
     {
         (string? machine, string? disk, string? host, string? board, string os) =
             OperatingSystem.IsWindows() ? Windows() : OperatingSystem.IsMacOS() ? MacOs() : Linux();
         if (board is not null && Placeholder().IsMatch(board.Replace("-", "")))
             board = null;
-        return new MachineFingerprint(Hash(product, "machine", machine), Hash(product, "disk", disk), Hash(product, "host", host),
-            Hash(product, "board", board), os);
+        return new MachineFingerprint(Hash(vendor, product, "machine", machine), Hash(vendor, product, "disk", disk), Hash(vendor, product, "host", host),
+            Hash(vendor, product, "board", board), os);
     }
 
     private static (string?, string?, string?, string?, string) Windows()

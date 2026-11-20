@@ -11,6 +11,8 @@ public sealed class LicenseClientOptions
 {
     /// <summary>Base URL of the licensing service, e.g. https://api.licenserail.com</summary>
     public required Uri ServerUrl { get; init; }
+    /// <summary>Your organization's slug from the dashboard (fixed for life; part of every device identity).</summary>
+    public required string Vendor { get; init; }
     /// <summary>The product code from the dashboard.</summary>
     public required string Product { get; init; }
     /// <summary>The environment's public key (PEM).</summary>
@@ -74,7 +76,7 @@ public sealed class LicenseClient : IDisposable
     {
         _options = options;
         _key = LicenseToken.ImportKey(options.PublicKeyPem);
-        _fingerprint = new(fingerprint ?? (() => Fingerprints.Collect(options.Product)));
+        _fingerprint = new(fingerprint ?? (() => Fingerprints.Collect(options.Vendor, options.Product)));
         _clock = clock ?? TimeProvider.System;
         _http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
         _http.BaseAddress = options.ServerUrl;
@@ -240,7 +242,7 @@ public sealed class LicenseClient : IDisposable
         return true;
     }
 
-    private byte[] HistoryKey => SHA256.HashData(Encoding.UTF8.GetBytes($"codeo-run-history:{_options.Product}:{_fingerprint.Value.MachineId}:{_fingerprint.Value.BoardId}"));
+    private byte[] HistoryKey => SHA256.HashData(Encoding.UTF8.GetBytes($"{_options.Vendor}:run-history:{_options.Product}:{_fingerprint.Value.MachineId}:{_fingerprint.Value.BoardId}"));
 
     private string Mac(string ms) => Convert.ToHexString(HMACSHA256.HashData(HistoryKey, Encoding.ASCII.GetBytes(ms)))[..32];
 

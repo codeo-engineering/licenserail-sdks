@@ -85,7 +85,7 @@ def _read(path: str) -> Optional[str]:
         return None
 
 
-def collect_fingerprint(product: str) -> Fingerprint:
+def collect_fingerprint(vendor: str, product: str) -> Fingerprint:
     """Hashed device fingerprint (Windows, macOS, Linux)."""
     system = platform.system()
     if system == "Windows":
@@ -114,8 +114,8 @@ def collect_fingerprint(product: str) -> Fingerprint:
     board = raw[3]
     if board and re.fullmatch(r"[0F-]+", board.replace("-", ""), re.I):
         board = None
-    return Fingerprint(hash_component(product, "machine", raw[0]), hash_component(product, "disk", raw[1]),
-                       hash_component(product, "host", raw[2]), hash_component(product, "board", board), raw[4])
+    return Fingerprint(hash_component(vendor, product, "machine", raw[0]), hash_component(vendor, product, "disk", raw[1]),
+                       hash_component(vendor, product, "host", raw[2]), hash_component(vendor, product, "board", board), raw[4])
 
 
 def _default_dir(product: str) -> Path:
@@ -131,12 +131,14 @@ def _default_dir(product: str) -> Path:
 class LicenseClient:
     """Offline verification on every start, online refresh when due, activation, deactivation and floating leases."""
 
-    def __init__(self, server_url: str, product: str, public_key_pem: str, storage_dir: Optional[str] = None,
+    def __init__(self, server_url: str, vendor: str, product: str, public_key_pem: str, storage_dir: Optional[str] = None,
                  app_version: Optional[str] = None, refresh_on_startup: bool = False, timeout: float = 10.0,
                  fingerprint: Optional[Callable[[], Fingerprint]] = None, now: Optional[Callable[[], datetime]] = None,
                  machine_name: Optional[str] = None):
         if not server_url or not product or not public_key_pem:
-            raise ValueError("server_url, product and public_key_pem are required")
+            raise ValueError("server_url, vendor, product and public_key_pem are required")
+        #: The organization's slug from the dashboard (fixed for life; part of every device identity).
+        self.vendor = vendor
         self.server_url = server_url.rstrip("/")
         self.product = product
         self._key = load_public_key(public_key_pem)
@@ -144,7 +146,7 @@ class LicenseClient:
         self.app_version = app_version
         self.refresh_on_startup = refresh_on_startup
         self.timeout = timeout
-        self._fingerprint_factory = fingerprint or (lambda: collect_fingerprint(product))
+        self._fingerprint_factory = fingerprint or (lambda: collect_fingerprint(vendor, product))
         self._fp: Optional[Fingerprint] = None
         self._now = now or (lambda: datetime.now(timezone.utc))
         self.machine_name = machine_name or socket.gethostname()
@@ -173,11 +175,11 @@ class LicenseClient:
         if not token:
             return CheckResult("Missing")
         payload = verify_token(token, self._key)
-        last_seen = decode_run_history(self._read("license.seen"), self.product, self.fingerprint)
+        last_seen = decode_run_history(self._read("license.seen"), self.vendor, self.product, self.fingerprint)
         now = self._now()
         status = evaluate(payload, self.product, self.fingerprint, now, last_seen)
         if status in ("Valid", "Expired", "OfflineTooLong") and (last_seen is None or now > last_seen):
-            self._write("license.seen", encode_run_history(now, self.product, self.fingerprint))
+            self._write("license.seen", encode_run_history(now, self.vendor, self.product, self.fingerprint))
         if payload and payload.get("test") and not self._warned_test:
             self._warned_test = True
             warnings.warn("licenserail: test license, not for production use")
@@ -297,7 +299,7 @@ class LicenseClient:
         if not payload or str(payload.get("product", "")).lower() != self.product.lower():
             return False
         self._write("license.lic", token)
-        self._write("license.seen", encode_run_history(self._now(), self.product, self.fingerprint))
+        self._write("license.seen", encode_run_history(self._now(), self.vendor, self.product, self.fingerprint))
         return True
 
     def _payload(self) -> Optional[dict]:

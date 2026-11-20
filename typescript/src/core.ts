@@ -85,10 +85,13 @@ export function verifyToken(token: string, publicKey: KeyObject | string): Licen
   }
 }
 
-/** component = hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw)))); blank → "none". */
-export function hashComponent(product: string, part: 'machine' | 'disk' | 'host' | 'board', raw: string | null | undefined): string {
+/**
+ * component = hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank → "none".
+ * `vendor` is the organization's slug from the dashboard; it never changes, so device identities stay stable.
+ */
+export function hashComponent(vendor: string, product: string, part: 'machine' | 'disk' | 'host' | 'board', raw: string | null | undefined): string {
   if (raw == null || raw.trim() === '') return UNAVAILABLE
-  return createHash('sha256').update(`codeo:${product}:${part}:${raw.trim().toUpperCase()}`, 'utf8').digest('hex')
+  return createHash('sha256').update(`${vendor}:${product}:${part}:${raw.trim().toUpperCase()}`, 'utf8').digest('hex')
 }
 
 const available = (v: string | null | undefined): v is string => !!v && v !== UNAVAILABLE
@@ -119,21 +122,21 @@ export function evaluate(payload: LicensePayload | null, product: string, machin
 }
 
 /** Tamper-evident "last run" record: `{epochMs}.{hmac}` keyed to the product and device. */
-export function encodeRunHistory(at: Date, product: string, machine: Fingerprint): string {
+export function encodeRunHistory(at: Date, vendor: string, product: string, machine: Fingerprint): string {
   const ms = String(at.getTime())
-  return `${ms}.${historyMac(ms, product, machine)}`
+  return `${ms}.${historyMac(ms, vendor, product, machine)}`
 }
 
-export function decodeRunHistory(value: string | null | undefined, product: string, machine: Fingerprint): Date | null {
+export function decodeRunHistory(value: string | null | undefined, vendor: string, product: string, machine: Fingerprint): Date | null {
   const parts = value?.trim().split('.')
   if (!parts || parts.length !== 2 || !/^\d{1,15}$/.test(parts[0])) return null
-  const expected = Buffer.from(historyMac(parts[0], product, machine))
+  const expected = Buffer.from(historyMac(parts[0], vendor, product, machine))
   const actual = Buffer.from(parts[1])
   if (expected.length !== actual.length || !timingSafeEqual(expected, actual)) return null
   return new Date(Number(parts[0]))
 }
 
-function historyMac(ms: string, product: string, machine: Fingerprint): string {
-  const key = createHash('sha256').update(`codeo-run-history:${product}:${machine.machineId}:${machine.boardId}`).digest()
+function historyMac(ms: string, vendor: string, product: string, machine: Fingerprint): string {
+  const key = createHash('sha256').update(`${vendor}:run-history:${product}:${machine.machineId}:${machine.boardId}`).digest()
   return createHmac('sha256', key).update(ms).digest('hex').slice(0, 32).toUpperCase()
 }

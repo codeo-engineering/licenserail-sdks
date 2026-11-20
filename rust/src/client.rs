@@ -9,6 +9,8 @@ use std::time::Duration;
 #[derive(Clone)]
 pub struct Options {
     pub server_url: String,
+    /// Your organization's slug from the dashboard (fixed for life; part of every device identity).
+    pub vendor: String,
     pub product: String,
     pub public_key_pem: String,
     pub app_version: String,
@@ -24,6 +26,7 @@ impl Default for Options {
     fn default() -> Self {
         Options {
             server_url: String::new(),
+            vendor: String::new(),
             product: String::new(),
             public_key_pem: String::new(),
             app_version: String::new(),
@@ -72,7 +75,7 @@ fn fail(code: &str, message: &str) -> ActivationResult {
 
 impl LicenseClient {
     pub fn new(opts: Options) -> Result<Self, String> {
-        if opts.server_url.is_empty() || opts.product.is_empty() || opts.public_key_pem.is_empty() {
+        if opts.server_url.is_empty() || opts.vendor.is_empty() || opts.product.is_empty() || opts.public_key_pem.is_empty() {
             return Err("server_url, product and public_key_pem are required".into());
         }
         let key = parse_public_key(&opts.public_key_pem)?;
@@ -90,7 +93,7 @@ impl LicenseClient {
 
     fn fingerprint(&mut self) -> Fingerprint {
         if self.fp.is_none() {
-            self.fp = Some(crate::collect_fingerprint(&self.opts.product));
+            self.fp = Some(crate::collect_fingerprint(&self.opts.vendor, &self.opts.product));
         }
         self.fp.clone().unwrap()
     }
@@ -229,13 +232,13 @@ impl LicenseClient {
 
     fn encode_history(&self, at: DateTime<Utc>, fp: &Fingerprint) -> String {
         let ms = at.timestamp_millis().to_string();
-        format!("{ms}.{}", history_mac(&ms, &self.opts.product, fp))
+        format!("{ms}.{}", history_mac(&ms, &self.opts.vendor, &self.opts.product, fp))
     }
 
     fn decode_history(&self, v: &str, fp: &Fingerprint) -> Option<DateTime<Utc>> {
         let (ms, mac) = v.trim().split_once('.')?;
         let n: i64 = ms.parse().ok()?;
-        if mac != history_mac(ms, &self.opts.product, fp) {
+        if mac != history_mac(ms, &self.opts.vendor, &self.opts.product, fp) {
             return None;
         }
         Utc.timestamp_millis_opt(n).single()

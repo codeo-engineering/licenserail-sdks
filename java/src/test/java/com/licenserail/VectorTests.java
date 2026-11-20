@@ -29,7 +29,7 @@ public final class VectorTests {
 
         for (Object o : (List<Object>) Json.object(Files.readString(dir.resolve("fingerprint.json"))).get("cases")) {
             Map<String, Object> c = (Map<String, Object>) o;
-            check(Licensing.hashComponent((String) c.get("product"), (String) c.get("part"), (String) c.get("raw")).equals(c.get("hash")), "hash " + c.get("raw"));
+            check(Licensing.hashComponent((String) c.get("vendor"), (String) c.get("product"), (String) c.get("part"), (String) c.get("raw")).equals(c.get("hash")), "hash " + c.get("raw"));
         }
 
         for (Object o : (List<Object>) Json.object(Files.readString(dir.resolve("match.json"))).get("cases")) {

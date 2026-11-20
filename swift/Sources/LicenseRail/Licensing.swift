@@ -109,10 +109,11 @@ public enum Licensing {
         return LicensePayload(data: body)
     }
 
-    /// hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw)))); blank gives "none".
-    public static func hashComponent(product: String, part: String, raw: String?) -> String {
+    /// hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank gives "none".
+    /// `vendor` is the organization's slug (fixed for life).
+    public static func hashComponent(vendor: String, product: String, part: String, raw: String?) -> String {
         guard let t = raw?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty else { return unavailable }
-        let digest = SHA256.hash(data: Data("codeo:\(product):\(part):\(t.uppercased(with: Locale(identifier: "en_US_POSIX")))".utf8))
+        let digest = SHA256.hash(data: Data("\(vendor):\(product):\(part):\(t.uppercased(with: Locale(identifier: "en_US_POSIX")))".utf8))
         return digest.map { String(format: "%02x", $0) }.joined()
     }
 
@@ -129,8 +130,8 @@ public enum Licensing {
         return .valid
     }
 
-    static func historyMac(_ ms: String, product: String, machine: Fingerprint) -> String {
-        let key = SymmetricKey(data: SHA256.hash(data: Data("codeo-run-history:\(product):\(machine.machineId):\(machine.boardId)".utf8)))
+    static func historyMac(_ ms: String, vendor: String, product: String, machine: Fingerprint) -> String {
+        let key = SymmetricKey(data: SHA256.hash(data: Data("\(vendor):run-history:\(product):\(machine.machineId):\(machine.boardId)".utf8)))
         let mac = HMAC<SHA256>.authenticationCode(for: Data(ms.utf8), using: key)
         return String(mac.map { String(format: "%02X", $0) }.joined().prefix(32))
     }

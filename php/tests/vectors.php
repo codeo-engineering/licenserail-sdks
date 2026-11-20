@@ -25,7 +25,7 @@ foreach ($t['cases'] as $c) {
     }
 }
 foreach ($load('fingerprint.json')['cases'] as $c) {
-    $check(Licensing::hashComponent($c['product'], $c['part'], $c['raw']) === $c['hash'], 'hash ' . json_encode($c['raw']));
+    $check(Licensing::hashComponent($c['vendor'], $c['product'], $c['part'], $c['raw']) === $c['hash'], 'hash ' . json_encode($c['raw']));
 }
 foreach ($load('match.json')['cases'] as $c) {
     $check(Licensing::matches($c['registered'], $c['presented']) === $c['matches'], 'match ' . $c['name']);

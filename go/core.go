@@ -136,13 +136,14 @@ func VerifyToken(token string, key *ecdsa.PublicKey) *Payload {
 	return &p
 }
 
-// HashComponent is hex(SHA256("codeo:" + product + ":" + part + ":" + upper(trim(raw)))); blank raw gives "none".
-func HashComponent(product, part, raw string) string {
+// HashComponent is hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank raw gives "none".
+// vendor is the organization's slug (fixed for life).
+func HashComponent(vendor, product, part, raw string) string {
 	t := strings.TrimSpace(raw)
 	if t == "" {
 		return Unavailable
 	}
-	sum := sha256.Sum256([]byte(fmt.Sprintf("codeo:%s:%s:%s", product, part, strings.ToUpper(t))))
+	sum := sha256.Sum256([]byte(fmt.Sprintf("%s:%s:%s:%s", vendor, product, part, strings.ToUpper(t))))
 	return hex.EncodeToString(sum[:])
 }
 
@@ -193,25 +194,25 @@ func Evaluate(p *Payload, product string, machine Fingerprint, now time.Time, la
 	return Valid
 }
 
-func historyMac(ms, product string, m Fingerprint) string {
-	key := sha256.Sum256([]byte(fmt.Sprintf("codeo-run-history:%s:%s:%s", product, m.MachineID, m.BoardID)))
+func historyMac(ms, vendor, product string, m Fingerprint) string {
+	key := sha256.Sum256([]byte(fmt.Sprintf("%s:run-history:%s:%s:%s", vendor, product, m.MachineID, m.BoardID)))
 	h := hmac.New(sha256.New, key[:])
 	h.Write([]byte(ms))
 	return strings.ToUpper(hex.EncodeToString(h.Sum(nil)))[:32]
 }
 
-func encodeHistory(at time.Time, product string, m Fingerprint) string {
+func encodeHistory(at time.Time, vendor, product string, m Fingerprint) string {
 	ms := strconv.FormatInt(at.UnixMilli(), 10)
-	return ms + "." + historyMac(ms, product, m)
+	return ms + "." + historyMac(ms, vendor, product, m)
 }
 
-func decodeHistory(v, product string, m Fingerprint) *time.Time {
+func decodeHistory(v, vendor, product string, m Fingerprint) *time.Time {
 	parts := strings.Split(strings.TrimSpace(v), ".")
 	if len(parts) != 2 {
 		return nil
 	}
 	ms, err := strconv.ParseInt(parts[0], 10, 64)
-	if err != nil || ms <= 0 || !hmac.Equal([]byte(parts[1]), []byte(historyMac(parts[0], product, m))) {
+	if err != nil || ms <= 0 || !hmac.Equal([]byte(parts[1]), []byte(historyMac(parts[0], vendor, product, m))) {
 		return nil
 	}
 	t := time.UnixMilli(ms).UTC()

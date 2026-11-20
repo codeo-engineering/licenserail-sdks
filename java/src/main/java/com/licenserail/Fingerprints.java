@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public final class Fingerprints {
     private Fingerprints() {}
 
-    public static Licensing.Fingerprint collect(String product) {
+    public static Licensing.Fingerprint collect(String vendor, String product) {
         String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
         String machine, disk, host = hostName(), board;
         String osName;
@@ -38,8 +38,8 @@ public final class Fingerprints {
             osName = "linux";
         }
         if (board != null && board.replace("-", "").matches("(?i)[0F]*")) board = null;
-        return new Licensing.Fingerprint(Licensing.hashComponent(product, "machine", machine), Licensing.hashComponent(product, "disk", disk),
-            Licensing.hashComponent(product, "host", host), Licensing.hashComponent(product, "board", board), osName);
+        return new Licensing.Fingerprint(Licensing.hashComponent(vendor, product, "machine", machine), Licensing.hashComponent(vendor, product, "disk", disk),
+            Licensing.hashComponent(vendor, product, "host", host), Licensing.hashComponent(vendor, product, "board", board), osName);
     }
 
     private static String hostName() {
