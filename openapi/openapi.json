@@ -2317,7 +2317,7 @@
       "name": "client"
     },
     {
-      "name": "Codeo.Licensing.Api"
+      "name": "LicenseRail.Api"
     }
   ]
 }
