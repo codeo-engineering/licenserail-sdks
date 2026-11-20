@@ -1,0 +1,10 @@
+{
+  "name": "licenserail/licenserail",
+  "description": "LicenseRail client SDK: offline license verification, activation, refresh and floating leases (works in WordPress plugins).",
+  "type": "library",
+  "license": "MIT",
+  "authors": [{ "name": "Codeo Solutions Limited" }],
+  "require": { "php": ">=8.1", "ext-openssl": "*", "ext-json": "*" },
+  "autoload": { "classmap": ["src/"] },
+  "scripts": { "test": "php tests/vectors.php" }
+}
