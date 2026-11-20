@@ -78,7 +78,7 @@ public final class Licensing {
         }
     }
 
-    /** hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); vendor = the organization's slug (fixed for life). */
+    /** hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); vendor = the organization ID (ten_..., never changes). */
     public static String hashComponent(String vendor, String product, String part, String raw) {
         if (raw == null || raw.strip().isEmpty()) return UNAVAILABLE;
         try {

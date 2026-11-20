@@ -23,7 +23,7 @@ public struct CheckResult {
 public final class LicenseClient {
     public struct Options {
         public var serverURL: URL
-        /// Your organization's slug from the dashboard (fixed for life; part of every device identity).
+        /// Your organization ID from the dashboard (ten_...; part of every device identity).
         public var vendor: String
         public var product: String
         public var appVersion: String?

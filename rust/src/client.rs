@@ -9,7 +9,7 @@ use std::time::Duration;
 #[derive(Clone)]
 pub struct Options {
     pub server_url: String,
-    /// Your organization's slug from the dashboard (fixed for life; part of every device identity).
+    /// Your organization ID from the dashboard (ten_...; part of every device identity).
     pub vendor: String,
     pub product: String,
     pub public_key_pem: String,

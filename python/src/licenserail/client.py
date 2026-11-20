@@ -137,7 +137,7 @@ class LicenseClient:
                  machine_name: Optional[str] = None):
         if not server_url or not product or not public_key_pem:
             raise ValueError("server_url, vendor, product and public_key_pem are required")
-        #: The organization's slug from the dashboard (fixed for life; part of every device identity).
+        #: The organization ID from the dashboard (ten_...; part of every device identity).
         self.vendor = vendor
         self.server_url = server_url.rstrip("/")
         self.product = product

@@ -56,7 +56,7 @@ final class Licensing
         return is_array($payload) && isset($payload['fingerprint']) ? $payload : null;
     }
 
-    /** hex(SHA256(vendor . ':' . product . ':' . part . ':' . upper(trim(raw)))); \$vendor is the organization's slug (fixed for life). */
+    /** hex(SHA256(vendor . ':' . product . ':' . part . ':' . upper(trim(raw)))); \$vendor is the organization ID (ten_..., never changes). */
     public static function hashComponent(string $vendor, string $product, string $part, ?string $raw): string
     {
         if ($raw === null || trim($raw) === '') {

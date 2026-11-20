@@ -4,7 +4,7 @@ using LicenseRail;
 using var client = new LicenseClient(new LicenseClientOptions
 {
     ServerUrl = new Uri(Environment.GetEnvironmentVariable("LICENSERAIL_URL") ?? "https://api.licenserail.com"),
-    Vendor = Environment.GetEnvironmentVariable("LICENSERAIL_VENDOR") ?? "acme",
+    Vendor = Environment.GetEnvironmentVariable("LICENSERAIL_VENDOR") ?? "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
     Product = Environment.GetEnvironmentVariable("LICENSERAIL_PRODUCT") ?? "my-app",
     PublicKeyPem = File.ReadAllText(Environment.GetEnvironmentVariable("LICENSERAIL_PUBLIC_KEY_FILE") ?? "public-key.pem"),
     AppVersion = "1.0.0",

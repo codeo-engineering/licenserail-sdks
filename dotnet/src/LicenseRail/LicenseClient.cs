@@ -11,7 +11,7 @@ public sealed class LicenseClientOptions
 {
     /// <summary>Base URL of the licensing service, e.g. https://api.licenserail.com</summary>
     public required Uri ServerUrl { get; init; }
-    /// <summary>Your organization's slug from the dashboard (fixed for life; part of every device identity).</summary>
+    /// <summary>Your organization ID from the dashboard (ten_...; part of every device identity).</summary>
     public required string Vendor { get; init; }
     /// <summary>The product code from the dashboard.</summary>
     public required string Product { get; init; }

@@ -20,7 +20,7 @@ export interface LicenseClientOptions {
   serverUrl: string
   /** The product code from the dashboard. */
   product: string
-  /** Your organization's slug from the dashboard (fixed for life; part of every device identity). */
+  /** Your organization ID from the dashboard (ten_...; part of every device identity). */
   vendor: string
   /** The environment's public key (PEM); verifies license files offline. */
   publicKeyPem: string

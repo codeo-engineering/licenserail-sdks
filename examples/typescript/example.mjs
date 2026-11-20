@@ -4,8 +4,8 @@ import { LicenseClient } from '../../typescript/dist/index.js'
 
 const client = new LicenseClient({
   serverUrl: process.env.LICENSERAIL_URL ?? 'https://api.licenserail.com',
-  vendor: process.env.LICENSERAIL_VENDOR ?? 'acme',
-  vendor: process.env.LICENSERAIL_VENDOR ?? 'acme',
+  vendor: process.env.LICENSERAIL_VENDOR ?? 'ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b',
+  vendor: process.env.LICENSERAIL_VENDOR ?? 'ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b',
   product: process.env.LICENSERAIL_PRODUCT ?? 'my-app',
   publicKeyPem: readFileSync(process.env.LICENSERAIL_PUBLIC_KEY_FILE ?? 'public-key.pem', 'utf8'),
   appVersion: '1.0.0',

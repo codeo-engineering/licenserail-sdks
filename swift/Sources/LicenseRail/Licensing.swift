@@ -110,7 +110,7 @@ public enum Licensing {
     }
 
     /// hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank gives "none".
-    /// `vendor` is the organization's slug (fixed for life).
+    /// `vendor` is the organization ID (ten_..., never changes).
     public static func hashComponent(vendor: String, product: String, part: String, raw: String?) -> String {
         guard let t = raw?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty else { return unavailable }
         let digest = SHA256.hash(data: Data("\(vendor):\(product):\(part):\(t.uppercased(with: Locale(identifier: "en_US_POSIX")))".utf8))

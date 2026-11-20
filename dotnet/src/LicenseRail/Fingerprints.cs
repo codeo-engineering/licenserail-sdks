@@ -10,7 +10,7 @@ public static partial class Fingerprints
 {
     /// <summary>
     /// <c>hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw))))</c>; blank → "none". <paramref name="vendor"/> is the
-    /// organization's slug (fixed for life).
+    /// organization ID (ten_..., never changes).
     /// </summary>
     public static string Hash(string vendor, string product, string part, string? raw)
     {

@@ -18,7 +18,7 @@ public record LicenseOptions(String serverUrl, String vendor, String product, St
         private Supplier<Licensing.Fingerprint> fingerprint;
 
         public Builder serverUrl(String v) { serverUrl = v; return this; }
-        /** Your organization's slug from the dashboard (fixed for life; part of every device identity). */
+        /** Your organization ID from the dashboard (ten_...; part of every device identity). */
         public Builder vendor(String v) { vendor = v; return this; }
         public Builder product(String v) { product = v; return this; }
         public Builder publicKeyPem(String v) { publicKeyPem = v; return this; }

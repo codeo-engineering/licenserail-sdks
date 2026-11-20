@@ -64,7 +64,7 @@ function linux(): [string | null, string | null, string | null, string | null] {
   return [machine, disk, hostname(), placeholder(board) ? null : board]
 }
 
-/** Collects and hashes the device fingerprint for `vendor` (organization slug) and `product` (Windows, macOS, Linux). */
+/** Collects and hashes the device fingerprint for `vendor` (organization ID) and `product` (Windows, macOS, Linux). */
 export function collectFingerprint(vendor: string, product: string): Fingerprint {
   const os = platform() === 'win32' ? 'windows' : platform() === 'darwin' ? 'macos' : 'linux'
   const [m, d, h, b] = os === 'windows' ? windows() : os === 'macos' ? macos() : linux()

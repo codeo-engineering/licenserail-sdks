@@ -137,7 +137,7 @@ func VerifyToken(token string, key *ecdsa.PublicKey) *Payload {
 }
 
 // HashComponent is hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank raw gives "none".
-// vendor is the organization's slug (fixed for life).
+// vendor is the organization ID (ten_..., never changes).
 func HashComponent(vendor, product, part, raw string) string {
 	t := strings.TrimSpace(raw)
 	if t == "" {

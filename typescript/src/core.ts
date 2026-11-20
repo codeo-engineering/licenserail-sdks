@@ -87,7 +87,7 @@ export function verifyToken(token: string, publicKey: KeyObject | string): Licen
 
 /**
  * component = hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank → "none".
- * `vendor` is the organization's slug from the dashboard; it never changes, so device identities stay stable.
+ * `vendor` is the organization ID from the dashboard (ten_...); it never changes, so device identities stay stable.
  */
 export function hashComponent(vendor: string, product: string, part: 'machine' | 'disk' | 'host' | 'board', raw: string | null | undefined): string {
   if (raw == null || raw.trim() === '') return UNAVAILABLE

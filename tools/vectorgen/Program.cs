@@ -20,8 +20,8 @@ using ECDsa other = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 string publicPem = key.ExportSubjectPublicKeyInfoPem();
 
 var t0 = new DateTimeOffset(2026, 11, 20, 10, 0, 0, TimeSpan.Zero);
-var fp = new MachineFingerprint(Hash("acme", "demo-app", "machine", "MACHINE-1"), Hash("acme", "demo-app", "disk", "1A2B3C4D"),
-    Hash("acme", "demo-app", "host", "DESKTOP-01"), Hash("acme", "demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"));
+var fp = new MachineFingerprint(Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "machine", "MACHINE-1"), Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "disk", "1A2B3C4D"),
+    Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "host", "DESKTOP-01"), Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"));
 
 LicensePayload V1(Action<LicensePayloadBuilder>? edit = null)
 {
@@ -98,21 +98,21 @@ Write("tokens.json", tokens);
 // Fingerprint hashing.
 var raws = new (string Vendor, string Product, string Part, string? Raw)[]
 {
-    ("acme", "demo-app", "machine", "6f1a7e2c-3b4d-4e5f-8a9b-0c1d2e3f4a5b"),
-    ("acme", "demo-app", "disk", "1A2B3C4D"),
-    ("acme", "demo-app", "host", "desktop-01"),
-    ("acme", "demo-app", "host", "  Desktop-01  "),
-    ("acme", "demo-app", "board", " 4c4c4544-0042-3510-8048-b4c04f4e4d32 "),
-    ("acme", "other-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
-    ("other-vendor", "demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
-    ("acme", "demo-app", "disk", ""),
-    ("acme", "demo-app", "disk", "   "),
-    ("acme", "demo-app", "board", null),
-    ("acme", "demo-app", "host", "çağatay-pc"),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "machine", "6f1a7e2c-3b4d-4e5f-8a9b-0c1d2e3f4a5b"),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "disk", "1A2B3C4D"),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "host", "desktop-01"),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "host", "  Desktop-01  "),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "board", " 4c4c4544-0042-3510-8048-b4c04f4e4d32 "),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "other-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
+    ("ten_0c1d2e3f4a5b46c7d8e9f0a1b2c3d4e5", "demo-app", "board", "4C4C4544-0042-3510-8048-B4C04F4E4D32"),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "disk", ""),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "disk", "   "),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "board", null),
+    ("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "host", "çağatay-pc"),
 };
 Write("fingerprint.json", new
 {
-    description = "component = lowercase_hex(SHA256(utf8(vendor + \":\" + product + \":\" + part + \":\" + upper(trim(raw))))); vendor = the organization's slug (fixed for life); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
+    description = "component = lowercase_hex(SHA256(utf8(vendor + \":\" + product + \":\" + part + \":\" + upper(trim(raw))))); vendor = the organization ID (ten_..., never changes); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
     cases = raws.Select(r => new { vendor = r.Vendor, product = r.Product, part = r.Part, raw = r.Raw, hash = Hash(r.Vendor, r.Product, r.Part, r.Raw) }).ToArray(),
 });
 
@@ -150,7 +150,7 @@ Write("match.json", new
 // Offline evaluation.
 string suspendedToken = LicenseToken.Sign(V1(b => b.P = b.P with { Suspended = true }), key);
 string expiringToken = LicenseToken.Sign(V1(b => b.P = b.P with { ExpiresAt = t0.AddDays(10) }), key);
-var otherMachine = new MachineFingerprint(Hash("acme", "demo-app", "machine", "X"), Hash("acme", "demo-app", "disk", "Y"), Hash("acme", "demo-app", "host", "Z"), Hash("acme", "demo-app", "board", "W"));
+var otherMachine = new MachineFingerprint(Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "machine", "X"), Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "disk", "Y"), Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "host", "Z"), Hash("ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b", "demo-app", "board", "W"));
 var evalCases = new (string Name, string Token, string Product, MachineFingerprint Machine, DateTimeOffset Now, DateTimeOffset? LastSeen)[]
 {
     ("valid", v1Token, "demo-app", fp, t0.AddHours(2), t0.AddHours(1)),

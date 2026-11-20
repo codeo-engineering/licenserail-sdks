@@ -39,7 +39,7 @@ struct Payload {
 std::optional<Payload> verify_token(const std::string& token, const std::string& public_key_pem);
 
 /// hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); empty gives "none".
-/// vendor is the organization's slug (fixed for life).
+/// vendor is the organization ID (ten_..., never changes).
 /// Uppercasing covers ASCII, Latin-1 and Latin Extended-A, like the other SDKs for typical host names.
 std::string hash_component(const std::string& vendor, const std::string& product, const std::string& part, const std::optional<std::string>& raw);
 

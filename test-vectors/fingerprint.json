@@ -1,82 +1,82 @@
 {
-  "description": "component = lowercase_hex(SHA256(utf8(vendor + \":\" + product + \":\" + part + \":\" + upper(trim(raw))))); vendor = the organization's slug (fixed for life); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
+  "description": "component = lowercase_hex(SHA256(utf8(vendor + \":\" + product + \":\" + part + \":\" + upper(trim(raw))))); vendor = the organization ID (ten_..., never changes); missing or blank raw = \"none\". upper is invariant (Unicode) uppercase.",
   "cases": [
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "machine",
       "raw": "6f1a7e2c-3b4d-4e5f-8a9b-0c1d2e3f4a5b",
-      "hash": "1f1b26a603c60983d0c26e599e073a647eb159ddaff29485b6d4eb531b41c440"
+      "hash": "80a0ef1eec41c4077888e177aef9a7f2a7162eaecd52d5e0c11e5f0de3c49af7"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "disk",
       "raw": "1A2B3C4D",
-      "hash": "57b9026314d74c839f9746e0425f486677ee244d00ebe3893420620608135651"
+      "hash": "4e2ce28fcb760111a86454c6dc1dd4bc4d0a9e5efec9c0c85b4d28f9dc685a25"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "host",
       "raw": "desktop-01",
-      "hash": "4ef042287411c01380c9027142f34ddfe8516cc56b9a04a1e640a7715ff38c79"
+      "hash": "43abfa8ac90700f4e733a8ae8130dcfa233cd317c90ab1a334c79fef27aa9225"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "host",
       "raw": "  Desktop-01  ",
-      "hash": "4ef042287411c01380c9027142f34ddfe8516cc56b9a04a1e640a7715ff38c79"
+      "hash": "43abfa8ac90700f4e733a8ae8130dcfa233cd317c90ab1a334c79fef27aa9225"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "board",
       "raw": " 4c4c4544-0042-3510-8048-b4c04f4e4d32 ",
-      "hash": "620dce2bbae5c46e093e50c8dc6beb91951ff0729b894e24fe17c36d1f3e67a8"
+      "hash": "11f63e248c55f0b9f7ef7b0c78b6d1811a96ac8aa1fe4653e84fa55b24e79b84"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "other-app",
       "part": "board",
       "raw": "4C4C4544-0042-3510-8048-B4C04F4E4D32",
-      "hash": "6ace8e78f5199b1eeabe28b961d6bfa30d2baa95ea2cac1717c6e3f1fb02f6f3"
+      "hash": "15a1fd2cce42c7eb11ad24c13b1fdb706a3b7922caa3299a1dd63e6c53a156b9"
     },
     {
-      "vendor": "other-vendor",
+      "vendor": "ten_0c1d2e3f4a5b46c7d8e9f0a1b2c3d4e5",
       "product": "demo-app",
       "part": "board",
       "raw": "4C4C4544-0042-3510-8048-B4C04F4E4D32",
-      "hash": "dd7245d2217087ecc3ff549711cd599987e883be33a6dcf042aaec38faf7445c"
+      "hash": "befd7bee34db8f5f31dfcd482bd24860d24cc87c5caec25ae553dfbe59c63d21"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "disk",
       "raw": "",
       "hash": "none"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "disk",
       "raw": "   ",
       "hash": "none"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "board",
       "raw": null,
       "hash": "none"
     },
     {
-      "vendor": "acme",
+      "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
       "product": "demo-app",
       "part": "host",
       "raw": "çağatay-pc",
-      "hash": "464d833aff0a8d6506ad762721171464d306d9f5d258b5a1938d979e16f5519c"
+      "hash": "e8607719341dce4813ea0c17e110a2f45b5524df1cb0b1923469b005d2cc3ecb"
     }
   ]
 }

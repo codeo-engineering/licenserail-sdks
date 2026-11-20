@@ -83,7 +83,7 @@ def verify_token(token: str, public_key: Any) -> Optional[dict]:
 
 
 def hash_component(vendor: str, product: str, part: str, raw: Optional[str]) -> str:
-    """vendor = the organization's slug (fixed for life). hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank -> "none"."""
+    """vendor = the organization ID (ten_..., never changes). hex(SHA256(vendor + ":" + product + ":" + part + ":" + upper(trim(raw)))); blank -> "none"."""
     if raw is None or raw.strip() == "":
         return UNAVAILABLE
     return hashlib.sha256(f"{vendor}:{product}:{part}:{raw.strip().upper()}".encode("utf-8")).hexdigest()

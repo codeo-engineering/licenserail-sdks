@@ -18,7 +18,7 @@ import (
 
 // Options configure a Client. ServerURL, Vendor, Product and PublicKeyPEM are required.
 type Options struct {
-	// Vendor is your organization's slug from the dashboard (fixed for life; part of every device identity).
+	// Vendor is your organization ID from the dashboard (ten_...; part of every device identity).
 	Vendor string
 	ServerURL        string
 	Product          string

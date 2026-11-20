@@ -20,7 +20,7 @@ using Transport = std::function<HttpResponse(const std::string& url, const std::
 
 struct Options {
     std::string server_url;
-    /// Your organization's slug from the dashboard (fixed for life; part of every device identity).
+    /// Your organization ID from the dashboard (ten_...; part of every device identity).
     std::string vendor;
     std::string product;
     std::string public_key_pem;
