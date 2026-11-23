@@ -1,0 +1,28 @@
+{
+  "name": "licenserail-embedded",
+  "version": "0.1.0",
+  "description": "LicenseRail client core for apps inside a host platform (YouTrack apps, browser extensions, web apps): offline ES256 verification without WebCrypto, installation identity, activation, trials. No dependencies.",
+  "license": "MIT",
+  "author": "Codeo Solutions Limited",
+  "type": "module",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node scripts/cjs-package.mjs",
+    "test": "npm run build && node --test test/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.6.0"
+  }
+}

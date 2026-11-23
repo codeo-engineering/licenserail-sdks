@@ -32,6 +32,16 @@ jobs:
       - run: npm ci
       - run: npm test
 
+  embedded:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: embedded } }
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npm test
+
   python:
     runs-on: ubuntu-latest
     strategy:
