@@ -185,6 +185,52 @@ Write("evaluate.json", new
         status = LicenseEvaluator.Evaluate(LicenseToken.Verify(c.Token, key), c.Product, c.Machine, c.Now, c.LastSeen).Status.ToString(),
     }).ToArray(),
 });
+// Apps inside a host platform (licenserail-embedded): installation identity, trials, host user limits, non-ASCII payloads.
+const string Vendor = "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b";
+string installationHash = Hash(Vendor, "yt-app", "installation", "c0368d08-878f-4f47-b836-724248d8f7e8");
+var installation = new MachineFingerprint(installationHash, MachineFingerprint.Unavailable, MachineFingerprint.Unavailable, MachineFingerprint.Unavailable, "youtrack");
+LicensePayload hostPayload = V1(b => b.P = b.P with
+{
+    Product = "yt-app", Customer = "Çağrı Yazılım A.Ş.", LicenseKey = "PQRST-VWXYZ-ABCDE-FGHJK", Fingerprint = installation,
+    EnvironmentId = Guid.Parse("3f2504e0-4f89-41d3-9a0c-0305e82c3303"), Entitlements = ["sla-reports"],
+    Metadata = new JsonObject { ["plan"] = "Kurumsal – 50 kullanıcı", ["note"] = "é€ 日本 😀" },
+    MaxHostUsers = 50, HostUserPolicy = "warn", HostUsersExceeded = true, OfflineUntil = t0.AddDays(30), RefreshAfter = t0.AddDays(1),
+});
+LicensePayload trialPayload = V1(b => b.P = b.P with
+{
+    LicenseId = Guid.Parse("9b2c1d4e-5f60-4718-9a2b-3c4d5e6f7081"), ActivationId = Guid.Parse("9b2c1d4e-5f60-4718-9a2b-3c4d5e6f7081"),
+    LicenseKey = "", Customer = "", Kind = "trial", Product = "yt-app", Fingerprint = installation, Trial = true,
+    EnvironmentId = Guid.Parse("3f2504e0-4f89-41d3-9a0c-0305e82c3303"), ExpiresAt = t0.AddDays(14), RefreshAfter = t0.AddDays(14), OfflineUntil = t0.AddDays(14),
+});
+string hostToken = LicenseToken.Sign(hostPayload, key);
+string trialToken = LicenseToken.Sign(trialPayload, key);
+var installationMatches = new (string Name, MachineFingerprint R, MachineFingerprint P)[]
+{
+    ("same installation", installation, installation),
+    ("platform is case-insensitive", installation, installation with { Os = "YouTrack" }),
+    ("another installation", installation, installation with { MachineId = Hash(Vendor, "yt-app", "installation", "another-uuid") }),
+    ("same id on another platform", installation, installation with { Os = "windows" }),
+    ("a computer never matches an installation", M("a", "b", "c", "d", "windows"), installation),
+};
+Write("installation.json", new
+{
+    description = "licenserail-embedded. installationId = lowercase_hex(SHA256(utf8(vendor + \":installation:\" ... same rule as fingerprint.json with part \"installation\"))). An installation fingerprint is {machineId: installationId, diskId: \"none\", hostName: \"none\", boardId: \"none\", os: platform}; it matches only the same platform (case-insensitive) and exactly the same installationId. Tokens verify with publicKeyPem; payload is a subset of the decoded fields (non-ASCII text must decode as UTF-8).",
+    publicKeyPem = publicPem,
+    installationHash = new { vendor = Vendor, product = "yt-app", part = "installation", raw = "c0368d08-878f-4f47-b836-724248d8f7e8", hash = installationHash },
+    tokens = new object[]
+    {
+        new { name = "host installation with user limit (warn) and non-ASCII text", token = hostToken, expect = new { signatureValid = true, payload = Payload(hostPayload) } },
+        new { name = "keyless trial", token = trialToken, expect = new { signatureValid = true, payload = Payload(trialPayload) } },
+    },
+    matches = installationMatches.Select(c => new
+    {
+        name = c.Name,
+        registered = F(c.R.MachineId, c.R.DiskId, c.R.HostName, c.R.BoardId, c.R.Os),
+        presented = F(c.P.MachineId, c.P.DiskId, c.P.HostName, c.P.BoardId, c.P.Os),
+        matches = c.R.Matches(c.P),
+    }).ToArray(),
+});
+
 Console.WriteLine($"Wrote vectors to {outDir}");
 
 void Write(string name, object value) =>

@@ -21,7 +21,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivateRequest"
+                "$ref": "#/components/schemas/ClientActivateRequest"
               }
             }
           },
@@ -32,7 +32,7 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
         "x-mcp": false
       }
     },
@@ -57,7 +57,7 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
         "x-mcp": false
       }
     },
@@ -82,7 +82,7 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
         "x-mcp": false
       }
     },
@@ -96,7 +96,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivateRequest"
+                "$ref": "#/components/schemas/ClientActivateRequest"
               }
             }
           },
@@ -107,7 +107,32 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
+        "x-mcp": false
+      }
+    },
+    "/api/client/v2/trial": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "operationId": "client_start_trial",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrialRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [],
         "x-mcp": false
       }
     },
@@ -132,7 +157,7 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
         "x-mcp": false
       }
     },
@@ -157,7 +182,7 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
         "x-mcp": false
       }
     },
@@ -182,7 +207,7 @@
             "description": "OK"
           }
         },
-        "security": [ ],
+        "security": [],
         "x-mcp": false
       }
     },
@@ -615,7 +640,7 @@
         "tags": [
           "licenses"
         ],
-        "summary": "List licenses (filters: productId, customerId, status, q, expiringWithinDays)",
+        "summary": "List licenses (filters: productId, customerId, status, q, expiringWithinDays, overHostUserLimit)",
         "operationId": "list_licenses",
         "parameters": [
           {
@@ -675,6 +700,13 @@
                 "string"
               ],
               "format": "int32"
+            }
+          },
+          {
+            "name": "overHostUserLimit",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -932,6 +964,58 @@
         },
         "x-billable": true,
         "x-requires-approval": true,
+        "x-mcp": true
+      }
+    },
+    "/api/v2/trials": {
+      "get": {
+        "tags": [
+          "environment"
+        ],
+        "summary": "List keyless trials (filters: productId, status = active, ended or converted)",
+        "operationId": "list_trials",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startingAfter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-billable": true,
+        "x-requires-approval": false,
         "x-mcp": true
       }
     },
@@ -1467,7 +1551,7 @@
         "tags": [
           "webhooks"
         ],
-        "summary": "Create a webhook endpoint; the signing secret (whsec_…) is shown once",
+        "summary": "Create a webhook endpoint; the signing secret (whsec_â€¦) is shown once",
         "operationId": "create_webhook_endpoint",
         "requestBody": {
           "content": {
@@ -1838,36 +1922,6 @@
   },
   "components": {
     "schemas": {
-      "ActivateRequest": {
-        "required": [
-          "licenseKey",
-          "product",
-          "fingerprint",
-          "machineName",
-          "appVersion"
-        ],
-        "type": "object",
-        "properties": {
-          "licenseKey": {
-            "type": "string"
-          },
-          "product": {
-            "type": "string"
-          },
-          "fingerprint": {
-            "$ref": "#/components/schemas/MachineFingerprint"
-          },
-          "machineName": {
-            "type": "string"
-          },
-          "appVersion": {
-            "type": [
-              "null",
-              "string"
-            ]
-          }
-        }
-      },
       "AutoTopUpV2": {
         "required": [
           "enabled",
@@ -1923,6 +1977,48 @@
           "clearExpiry": {
             "type": "boolean",
             "default": false
+          }
+        }
+      },
+      "ClientActivateRequest": {
+        "required": [
+          "product",
+          "fingerprint"
+        ],
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "$ref": "#/components/schemas/MachineFingerprint"
+          },
+          "licenseKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "machineName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "appVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hostUsers": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -1992,7 +2088,7 @@
               "string"
             ]
           },
-          "metadata": { }
+          "metadata": {}
         }
       },
       "CreateFeatureV2": {
@@ -2075,7 +2171,7 @@
               "type": "string"
             }
           },
-          "metadata": { },
+          "metadata": {},
           "notes": {
             "type": [
               "null",
@@ -2090,6 +2186,21 @@
               "string"
             ],
             "format": "int32"
+          },
+          "maxHostUsers": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hostUserPolicy": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -2115,7 +2226,16 @@
             ],
             "format": "int32"
           },
-          "metadata": { }
+          "metadata": {},
+          "trialDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
         }
       },
       "CreateWebhookEndpointV2": {
@@ -2239,6 +2359,15 @@
             "items": {
               "type": "string"
             }
+          },
+          "hostUsers": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -2297,19 +2426,59 @@
             "type": "string"
           }
         }
+      },
+      "TrialRequest": {
+        "required": [
+          "keyId",
+          "product",
+          "fingerprint"
+        ],
+        "type": "object",
+        "properties": {
+          "keyId": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "$ref": "#/components/schemas/MachineFingerprint"
+          },
+          "machineName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "appVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hostUsers": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
       }
     },
     "securitySchemes": {
       "apiKey": {
         "type": "http",
-        "description": "Secret or restricted API key (lr_test_…, lr_live_…, lr_rk_…) or a CLI/OAuth access token.",
+        "description": "Secret or restricted API key (lr_test_â€¦, lr_live_â€¦, lr_rk_â€¦) or a CLI/OAuth access token.",
         "scheme": "bearer"
       }
     }
   },
   "security": [
     {
-      "apiKey": [ ]
+      "apiKey": []
     }
   ],
   "tags": [

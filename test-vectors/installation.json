@@ -1,0 +1,172 @@
+{
+  "description": "licenserail-embedded. installationId = lowercase_hex(SHA256(utf8(vendor + \":installation:\" ... same rule as fingerprint.json with part \"installation\"))). An installation fingerprint is {machineId: installationId, diskId: \"none\", hostName: \"none\", boardId: \"none\", os: platform}; it matches only the same platform (case-insensitive) and exactly the same installationId. Tokens verify with publicKeyPem; payload is a subset of the decoded fields (non-ASCII text must decode as UTF-8).",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEelZp2+YZbRf2QtTOyqmnkHKFGQH9\nTBtBhagltonDR/MPfB4IJxeMb13q4jczDVVt0oGb/33Z9kz2n3yMfXgJDQ==\n-----END PUBLIC KEY-----",
+  "installationHash": {
+    "vendor": "ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b",
+    "product": "yt-app",
+    "part": "installation",
+    "raw": "c0368d08-878f-4f47-b836-724248d8f7e8",
+    "hash": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483"
+  },
+  "tokens": [
+    {
+      "name": "host installation with user limit (warn) and non-ASCII text",
+      "token": "eyJsaWNlbnNlSWQiOiIwZjhmYWQ1Yi1kOWNiLTQ2OWYtYTE2NS03MDg2NzcyODk1MGUiLCJhY3RpdmF0aW9uSWQiOiI3YzllNjY3OS03NDI1LTQwZGUtOTQ0Yi1lMDdmYzFmOTBhZTciLCJsaWNlbnNlS2V5IjoiUFFSU1QtVldYWVotQUJDREUtRkdISksiLCJwcm9kdWN0IjoieXQtYXBwIiwiY3VzdG9tZXIiOiJcdTAwQzdhXHUwMTFGclx1MDEzMSBZYXpcdTAxMzFsXHUwMTMxbSBBLlx1MDE1RS4iLCJraW5kIjoiZnVsbCIsImV4cGlyZXNBdCI6bnVsbCwiaXNzdWVkQXQiOiIyMDI2LTExLTIwVDEwOjAwOjAwKzAwOjAwIiwicmVmcmVzaEFmdGVyIjoiMjAyNi0xMS0yMVQxMDowMDowMCswMDowMCIsIm9mZmxpbmVVbnRpbCI6IjIwMjYtMTItMjBUMTA6MDA6MDArMDA6MDAiLCJmaW5nZXJwcmludCI6eyJtYWNoaW5lSWQiOiIzODQwOGZjOGM3NjA5MjE4YmY3ZjhiNzg3ZTdmMzYyYzRjOWQ4NTdlZmUzMWRkMDkyZjYwNWYxNjkyYjk2NDgzIiwiZGlza0lkIjoibm9uZSIsImhvc3ROYW1lIjoibm9uZSIsImJvYXJkSWQiOiJub25lIiwib3MiOiJ5b3V0cmFjayJ9LCJzdXNwZW5kZWQiOmZhbHNlLCJlbnZpcm9ubWVudElkIjoiM2YyNTA0ZTAtNGY4OS00MWQzLTlhMGMtMDMwNWU4MmMzMzAzIiwiZW50aXRsZW1lbnRzIjpbInNsYS1yZXBvcnRzIl0sIm1ldGFkYXRhIjp7InBsYW4iOiJLdXJ1bXNhbCBcdTIwMTMgNTAga3VsbGFuXHUwMTMxY1x1MDEzMSIsIm5vdGUiOiJcdTAwRTlcdTIwQUMgXHU2NUU1XHU2NzJDIFx1RDgzRFx1REUwMCJ9LCJtYXhIb3N0VXNlcnMiOjUwLCJob3N0VXNlclBvbGljeSI6Indhcm4iLCJob3N0VXNlcnNFeGNlZWRlZCI6dHJ1ZX0.uCPxUQeqR7CxeXC7pGDkB5ZXJNEpbjTQe-rt3hyxlst_rjpKkDfv4eJCmGoiuGDJacbbQHd7VFpNgEA0Yl8ZbQ",
+      "expect": {
+        "signatureValid": true,
+        "payload": {
+          "licenseId": "0f8fad5b-d9cb-469f-a165-70867728950e",
+          "activationId": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+          "licenseKey": "PQRST-VWXYZ-ABCDE-FGHJK",
+          "product": "yt-app",
+          "customer": "Çağrı Yazılım A.Ş.",
+          "kind": "full",
+          "expiresAt": null,
+          "issuedAt": "2026-11-20T10:00:00+00:00",
+          "refreshAfter": "2026-11-21T10:00:00+00:00",
+          "offlineUntil": "2026-12-20T10:00:00+00:00",
+          "fingerprint": {
+            "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+            "diskId": "none",
+            "hostName": "none",
+            "boardId": "none",
+            "os": "youtrack"
+          },
+          "suspended": false,
+          "environmentId": "3f2504e0-4f89-41d3-9a0c-0305e82c3303",
+          "entitlements": [
+            "sla-reports"
+          ],
+          "metadata": {
+            "plan": "Kurumsal – 50 kullanıcı",
+            "note": "é€ 日本 \uD83D\uDE00"
+          },
+          "maxHostUsers": 50,
+          "hostUserPolicy": "warn",
+          "hostUsersExceeded": true
+        }
+      }
+    },
+    {
+      "name": "keyless trial",
+      "token": "eyJsaWNlbnNlSWQiOiI5YjJjMWQ0ZS01ZjYwLTQ3MTgtOWEyYi0zYzRkNWU2ZjcwODEiLCJhY3RpdmF0aW9uSWQiOiI5YjJjMWQ0ZS01ZjYwLTQ3MTgtOWEyYi0zYzRkNWU2ZjcwODEiLCJsaWNlbnNlS2V5IjoiIiwicHJvZHVjdCI6Inl0LWFwcCIsImN1c3RvbWVyIjoiIiwia2luZCI6InRyaWFsIiwiZXhwaXJlc0F0IjoiMjAyNi0xMi0wNFQxMDowMDowMCswMDowMCIsImlzc3VlZEF0IjoiMjAyNi0xMS0yMFQxMDowMDowMCswMDowMCIsInJlZnJlc2hBZnRlciI6IjIwMjYtMTItMDRUMTA6MDA6MDArMDA6MDAiLCJvZmZsaW5lVW50aWwiOiIyMDI2LTEyLTA0VDEwOjAwOjAwKzAwOjAwIiwiZmluZ2VycHJpbnQiOnsibWFjaGluZUlkIjoiMzg0MDhmYzhjNzYwOTIxOGJmN2Y4Yjc4N2U3ZjM2MmM0YzlkODU3ZWZlMzFkZDA5MmY2MDVmMTY5MmI5NjQ4MyIsImRpc2tJZCI6Im5vbmUiLCJob3N0TmFtZSI6Im5vbmUiLCJib2FyZElkIjoibm9uZSIsIm9zIjoieW91dHJhY2sifSwic3VzcGVuZGVkIjpmYWxzZSwiZW52aXJvbm1lbnRJZCI6IjNmMjUwNGUwLTRmODktNDFkMy05YTBjLTAzMDVlODJjMzMwMyIsInRyaWFsIjp0cnVlfQ.gY6TedddNZyKwlqtbKfuTHZ86Ifbb3MOmha1oohXxFLDKBlEvSrhwPv75kUOkzp2drp8sEwbyNGSyS-oHPK6mw",
+      "expect": {
+        "signatureValid": true,
+        "payload": {
+          "licenseId": "9b2c1d4e-5f60-4718-9a2b-3c4d5e6f7081",
+          "activationId": "9b2c1d4e-5f60-4718-9a2b-3c4d5e6f7081",
+          "licenseKey": "",
+          "product": "yt-app",
+          "customer": "",
+          "kind": "trial",
+          "expiresAt": "2026-12-04T10:00:00+00:00",
+          "issuedAt": "2026-11-20T10:00:00+00:00",
+          "refreshAfter": "2026-12-04T10:00:00+00:00",
+          "offlineUntil": "2026-12-04T10:00:00+00:00",
+          "fingerprint": {
+            "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+            "diskId": "none",
+            "hostName": "none",
+            "boardId": "none",
+            "os": "youtrack"
+          },
+          "suspended": false,
+          "environmentId": "3f2504e0-4f89-41d3-9a0c-0305e82c3303",
+          "trial": true
+        }
+      }
+    }
+  ],
+  "matches": [
+    {
+      "name": "same installation",
+      "registered": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "presented": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "matches": true
+    },
+    {
+      "name": "platform is case-insensitive",
+      "registered": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "presented": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "YouTrack"
+      },
+      "matches": true
+    },
+    {
+      "name": "another installation",
+      "registered": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "presented": {
+        "machineId": "8d431a336a660235c14516f61f660ac08905c4f4b1476d217bd71c72130b7bdb",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "matches": false
+    },
+    {
+      "name": "same id on another platform",
+      "registered": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "presented": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "windows"
+      },
+      "matches": false
+    },
+    {
+      "name": "a computer never matches an installation",
+      "registered": {
+        "machineId": "a",
+        "diskId": "b",
+        "hostName": "c",
+        "boardId": "d",
+        "os": "windows"
+      },
+      "presented": {
+        "machineId": "38408fc8c7609218bf7f8b787e7f362c4c9d857efe31dd092f605f1692b96483",
+        "diskId": "none",
+        "hostName": "none",
+        "boardId": "none",
+        "os": "youtrack"
+      },
+      "matches": false
+    }
+  ]
+}
