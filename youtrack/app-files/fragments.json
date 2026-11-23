@@ -1,0 +1,25 @@
+{
+  "settings": {
+    "licenseKey": {
+      "type": "string",
+      "format": "secret",
+      "title": "License key",
+      "description": "The license key you received when you bought the app."
+    }
+  },
+  "appGlobalStorage": {
+    "licenserailToken": { "type": "string" },
+    "licenserailLastSeen": { "type": "string" },
+    "licenserailInstallation": { "type": "string" },
+    "licenserailState": { "type": "string" }
+  },
+  "widget": {
+    "key": "licenserail-license",
+    "name": "License",
+    "description": "License status, activation and trial",
+    "indexPath": "widgets/licenserail-license/index.html",
+    "extensionPoint": "ADMINISTRATION_MENU_ITEM",
+    "permissions": ["ADMIN_UPDATE_APP"]
+  },
+  "minYouTrackVersion": "2026.2"
+}

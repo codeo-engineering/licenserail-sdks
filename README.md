@@ -14,6 +14,7 @@ Client SDKs for [LicenseRail](https://licenserail.com) licensing (working name),
 | C++ + C ABI | `cpp/` | CMake (mbedTLS, libcurl or your own transport) | vectors (CI) |
 | PHP / WordPress | `php/` | Packagist `licenserail/licenserail` | vectors (CI) |
 | Apps inside a host (YouTrack apps, browser extensions, web apps) | `embedded/` | npm `licenserail-embedded` | vectors, Wycheproof, sandbox (CI) |
+| YouTrack apps (adapter, License page, CLI) | `youtrack/` | npm `licenserail-youtrack` | fake YouTrack runtime (CI) |
 
 Every SDK does the same things: verify the signed license file offline with the environment's public key (ECDSA P-256,
 IEEE P1363 signatures), hash the device fingerprint, evaluate offline (expiry, offline grace, clock rollback, suspension),
