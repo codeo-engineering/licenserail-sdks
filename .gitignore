@@ -9,3 +9,5 @@ build/
 .build/
 vendor/
 *.class
+# The CLI of licenserail-youtrack is source, not build output.
+!/youtrack/bin/
