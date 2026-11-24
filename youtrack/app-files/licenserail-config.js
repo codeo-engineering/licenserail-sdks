@@ -1,4 +1,4 @@
-// LicenseRail settings for this app. Copy the values from the dashboard (Developers → Integration code). None of them is a
+// LicenseRail settings for this app. Copy the values from the dashboard (Settings, Products, API keys). None of them is a
 // secret: the license key is entered by the customer's administrator in the app settings, never here.
 module.exports = {
   apiUrl: 'https://api.licenserail.com',

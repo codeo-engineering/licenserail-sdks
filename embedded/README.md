@@ -1,7 +1,7 @@
 # licenserail-embedded
 
-The LicenseRail client core for apps that run **inside a host platform**: YouTrack apps, browser extensions, web apps,
-workers. No dependencies and no Node APIs: it needs ES2020 (BigInt) and nothing else, so it also runs where `TextEncoder`,
+The LicenseRail client core for apps that run **inside a host platform**. The server accepts the platform `youtrack` today.
+No dependencies and no Node APIs: it needs ES2020 (BigInt) and nothing else, so it also runs where `TextEncoder`,
 `atob` and `crypto.subtle` are missing (YouTrack app backends).
 
 - Offline verification of LicenseRail tokens (ECDSA P-256, IEEE P1363) with a bundled verifier, or WebCrypto when the host has it.
@@ -24,7 +24,7 @@ const client = createLicenseClient({
   apiUrl: 'https://api.licenserail.com',
   publicKeyPem: PUBLIC_KEY_PEM,                 // from the dashboard; not a secret
   product: 'my-app',
-  fingerprint: installationFingerprint(VENDOR_ID, 'my-app', 'chrome', installationId),
+  fingerprint: installationFingerprint(VENDOR_ID, 'my-app', 'youtrack', installationId),
   storage: { get: (k) => localStorage.getItem(k), set: (k, v) => localStorage.setItem(k, v), remove: (k) => localStorage.removeItem(k) },
   appVersion: '1.2.0',
 })

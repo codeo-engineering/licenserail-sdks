@@ -13,7 +13,8 @@ npx licenserail-youtrack add ./my-app \
   --vendor ten_... --product my-app --key-id <key id> --public-key public-key.pem
 ```
 
-Take the values from the LicenseRail dashboard (Developers → Integration code). The command:
+Take the values from the LicenseRail dashboard: the organization id from Settings, the key id and public key from API keys.
+The command:
 
 - copies `licenserail-core.js`, `licenserail.js`, `licenserail-license.js` and the `widgets/licenserail-license` page,
 - writes `licenserail-config.js` (once; none of its values is a secret),
