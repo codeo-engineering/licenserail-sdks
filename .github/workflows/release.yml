@@ -49,8 +49,16 @@ jobs:
     needs: check
     uses: ./.github/workflows/sdks.yml
 
+  # Nothing is published unless every SDK works against a real API.
+  e2e:
+    needs: check
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/e2e.yml
+
   npm:
-    needs: tests
+    needs: [tests, e2e]
     if: startsWith(inputs.package, 'npm-')
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -83,7 +91,7 @@ jobs:
           NPM_CONFIG_PROVENANCE: ${{ !github.event.repository.private }}
 
   nuget:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'nuget'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -100,7 +108,7 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
   pypi:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'pypi'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -118,7 +126,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
 
   crates:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'crates'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -135,7 +143,7 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   maven:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'maven'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -168,7 +176,7 @@ jobs:
 
   # Go modules and the C++ sources are fetched from this repository: the release is a tag.
   tag:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'go' || inputs.package == 'cpp'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -184,7 +192,7 @@ jobs:
 
   # SwiftPM and Packagist need their manifest at the root of a repository, so these folders are copied to their own.
   mirror:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'swift' || inputs.package == 'php'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}
@@ -209,7 +217,7 @@ jobs:
 
   # A draft GitHub release; publishing the draft creates the tag.
   cli:
-    needs: tests
+    needs: [tests, e2e]
     if: inputs.package == 'cli'
     runs-on: ubuntu-latest
     environment: ${{ inputs.publish && 'release' || '' }}

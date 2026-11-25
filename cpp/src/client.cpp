@@ -157,6 +157,15 @@ std::optional<int64_t> Client::decode_history(const std::string& v) const {
     return std::stoll(ms);
 }
 
+/// A string member of a response, whatever the server sent.
+static std::string text(const json& j, const char* name, const char* fallback = "") {
+    if (!j.is_object()) return fallback;
+    auto v = j.find(name);
+    return v != j.end() && v->is_string() ? v->get<std::string>() : fallback;
+}
+
+static bool is_ok(int status) { return status >= 200 && status < 300; }
+
 CheckResult Client::evaluate_local() {
     std::string token = read("license.lic");
     if (token.empty()) { license_.reset(); return {Status::Missing, std::nullopt}; }
@@ -187,7 +196,10 @@ CheckResult Client::check() {
 HttpResponse Client::post(const std::string& path, const std::string& body) {
     std::string base = options_.server_url;
     while (!base.empty() && base.back() == '/') base.pop_back();
-    return options_.transport(base + path, body, options_.timeout_seconds);
+    HttpResponse r = options_.transport(base + path, body, options_.timeout_seconds);
+    // Not our server (a captive portal, a proxy): the same as being offline. Ours answers 204 or a JSON object.
+    if (is_ok(r.status) && r.status != 204 && !json::parse(r.body, nullptr, false).is_object()) return {};
+    return r;
 }
 
 ActivationResult Client::activate(const std::string& key, const std::string& machine_name) {
@@ -197,13 +209,13 @@ ActivationResult Client::activate(const std::string& key, const std::string& mac
                  {"appVersion", options_.app_version}};
     HttpResponse r = post("/api/client/v2/activate", body.dump());
     json j = json::parse(r.body, nullptr, false);
-    if (r.status == 400 && j.is_object() && j.value("message", "").find("floating") != std::string::npos) {
+    if (r.status == 400 && text(j, "message").find("floating") != std::string::npos) {
         r = post("/api/client/v2/floating/checkout", body.dump());
         j = json::parse(r.body, nullptr, false);
     }
     if (r.status == 0) return {false, "network", "Could not connect to the license server."};
-    if (r.status >= 400) return {false, j.is_object() ? j.value("code", "") : "", j.is_object() ? j.value("message", "Server error.") : "Server error."};
-    if (!j.is_object() || !save_if_valid(j.value("token", ""))) return {false, "invalid_token", "The server returned an invalid license."};
+    if (!is_ok(r.status)) return {false, text(j, "code"), text(j, "message", "Server error.")};
+    if (!save_if_valid(text(j, "token"))) return {false, "invalid_token", "The server returned an invalid license."};
     CheckResult c = evaluate_local();
     return c.valid() ? ActivationResult{true, "", "The license has been activated."} : ActivationResult{false, to_string(c.status), to_string(c.status)};
 }
@@ -216,8 +228,8 @@ ActivationResult Client::deactivate() {
     HttpResponse r = post(p && p->floating ? "/api/client/v2/floating/release" : "/api/client/v2/deactivate", body.dump());
     if (r.status == 0) return {false, "network", "Removing the license needs an internet connection."};
     json j = json::parse(r.body, nullptr, false);
-    std::string code = j.is_object() ? j.value("code", "") : "";
-    if (r.status >= 400 && !is_revoking_code(code)) return {false, code, j.is_object() ? j.value("message", "Server error.") : "Server error."};
+    std::string code = text(j, "code");
+    if (!is_ok(r.status) && !is_revoking_code(code)) return {false, code, text(j, "message", "Server error.")};
     remove("license.lic");
     return {true, "", "The license has been removed from this device."};
 }
@@ -231,11 +243,11 @@ bool Client::refresh(const std::vector<std::string>& anomalies) {
     HttpResponse r = post(p && p->floating ? "/api/client/v2/floating/heartbeat" : "/api/client/v2/refresh", body.dump());
     if (r.status == 0) return false;
     json j = json::parse(r.body, nullptr, false);
-    if (r.status < 400 && j.is_object()) return save_if_valid(j.value("token", ""));
-    std::string code = j.is_object() ? j.value("code", "") : "";
+    if (is_ok(r.status)) return save_if_valid(text(j, "token"));
+    std::string code = text(j, "code");
     if (is_revoking_code(code) || code == "lease_expired") {
         remove("license.lic");
-        last_server_message_ = j.value("message", "");
+        last_server_message_ = text(j, "message");
     }
     return false;
 }

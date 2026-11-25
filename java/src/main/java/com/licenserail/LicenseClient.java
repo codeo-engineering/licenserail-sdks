@@ -111,7 +111,7 @@ public final class LicenseClient {
             if (r.get("error") != null && String.valueOf(r.get("message")).toLowerCase().contains("floating"))
                 r = post("/api/client/v2/floating/checkout", body);
             if (r.get("error") != null) return new ActivationResult(false, (String) r.get("code"), String.valueOf(r.get("message")));
-            if (!saveIfValid((String) r.get("token"))) return new ActivationResult(false, "invalid_token", "The server returned an invalid license.");
+            if (!saveIfValid(r.get("token"))) return new ActivationResult(false, "invalid_token", "The server returned an invalid license.");
         } catch (IOException | InterruptedException e) {
             return new ActivationResult(false, "network", "Could not connect to the license server.");
         }
@@ -151,7 +151,7 @@ public final class LicenseClient {
         body.put("appVersion", options.appVersion());
         body.put("anomalies", anomalies);
         Map<String, Object> r = post(floating ? "/api/client/v2/floating/heartbeat" : "/api/client/v2/refresh", body);
-        if (r.get("error") == null) saveIfValid((String) r.get("token"));
+        if (r.get("error") == null) saveIfValid(r.get("token"));
         else if (Licensing.REVOKING_CODES.contains(r.get("code")) || "lease_expired".equals(r.get("code"))) {
             delete("license.lic");
             lastServerMessage = String.valueOf(r.get("message"));
@@ -169,12 +169,25 @@ public final class LicenseClient {
             .timeout(options.timeout()).header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(Json.write(body))).build();
         HttpResponse<String> res = http.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-        Map<String, Object> map = res.body() == null || res.body().isBlank() ? new LinkedHashMap<>() : new LinkedHashMap<>(Json.object(res.body()));
-        if (res.statusCode() >= 400) map.put("error", true);
+        boolean ok = res.statusCode() >= 200 && res.statusCode() < 300;
+        Map<String, Object> map = new LinkedHashMap<>();
+        try {
+            if (res.body() != null && !res.body().isBlank()) map.putAll(Json.object(res.body()));
+        } catch (RuntimeException e) {
+            // Not our server (a captive portal, a proxy): the same as being offline.
+            if (ok) throw new IOException("Unexpected response from the license server.", e);
+        }
+        if (!ok) {
+            map.put("error", true);
+            if (!(map.get("code") instanceof String)) map.put("code", "error");
+            if (!(map.get("message") instanceof String)) map.put("message", "Server error (" + res.statusCode() + ").");
+        }
         return map;
     }
 
-    private boolean saveIfValid(String token) {
+    private boolean saveIfValid(Object value) {
+        if (!(value instanceof String)) return false;
+        String token = (String) value;
         Map<String, Object> p = Licensing.verifyToken(token, key);
         if (p == null || !String.valueOf(p.get("product")).equalsIgnoreCase(options.product())) return false;
         write("license.lic", token);

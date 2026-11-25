@@ -33,4 +33,16 @@ dotnet run --project tools/vectorgen -- test-vectors
 
 CI (`.github/workflows/sdks.yml`) runs every SDK against them.
 
+## End-to-end tests
+
+`e2e/` installs every SDK's built package into an empty project and runs the same scenarios against a real API with an empty
+database (activation, offline use, seats, refresh, suspension, revocation, expiry, copied and changed files, clock changes,
+floating licenses, broken servers and proxies). CI (`.github/workflows/e2e.yml`) runs them on Linux, Windows and macOS; a
+release needs them to pass. Locally:
+
+```
+e2e/start-api.sh <published API folder> <work folder>
+E2E_MAIL=<work folder>/mail node e2e/run.mjs typescript go
+```
+
 Releases: [RELEASING.md](RELEASING.md).

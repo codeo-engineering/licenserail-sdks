@@ -1,6 +1,7 @@
 """The licensing client for a vendor's app (no secrets: only the environment's public key)."""
 from __future__ import annotations
 
+import http.client
 import json
 import os
 import platform
@@ -287,12 +288,19 @@ class LicenseClient:
         try:
             with urllib.request.urlopen(request, timeout=self.timeout) as response:
                 text = response.read().decode()
-                return True, json.loads(text) if text else {}
+                data = json.loads(text) if text else {}
         except urllib.error.HTTPError as e:
             try:
-                return False, json.loads(e.read().decode() or "{}")
-            except ValueError:
-                return False, {"message": f"Server error ({e.code})."}
+                data = json.loads(e.read().decode() or "{}")
+            except (OSError, ValueError, http.client.HTTPException):
+                data = None
+            return False, data if isinstance(data, dict) else {"message": f"Server error ({e.code})."}
+        except (ValueError, http.client.HTTPException) as e:
+            # Not our server (a captive portal, a proxy) or a broken connection: the same as being offline.
+            raise ConnectionError(f"unexpected response from the license server: {e}") from e
+        if not isinstance(data, dict):
+            raise ConnectionError("unexpected response from the license server")
+        return True, data
 
     def _save_if_valid(self, token: str) -> bool:
         payload = verify_token(token, self._key)

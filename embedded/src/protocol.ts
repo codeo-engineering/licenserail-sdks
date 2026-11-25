@@ -127,8 +127,9 @@ export function readResponse(status: number, bodyText: string | null | undefined
   let body: { token?: unknown; code?: unknown; message?: unknown } | null = null
   try { body = bodyText ? JSON.parse(bodyText) : null } catch { body = null }
   if (status >= 200 && status < 300) {
-    if (status === 204 || !body) return { ok: true, token: null }
-    if (typeof body.token === 'string') return { ok: true, token: body.token }
+    if (status === 204) return { ok: true, token: null }
+    // Anything else without a token isn't our server's answer (a captive portal, a proxy): an error, so nothing is removed.
+    if (body && typeof body.token === 'string') return { ok: true, token: body.token }
   }
   const code = body && typeof body.code === 'string' ? body.code : status === 0 ? 'network_error' : `http_${status}`
   const message = body && typeof body.message === 'string' ? body.message : status === 0 ? 'The license server could not be reached.' : 'Unexpected response from the license server.'

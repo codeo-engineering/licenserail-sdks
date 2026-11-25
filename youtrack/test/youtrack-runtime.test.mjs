@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert'
 import { execFileSync } from 'node:child_process'
 import { generateKeyPairSync, sign } from 'node:crypto'
-import { cpSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import Module from 'node:module'
 import { tmpdir } from 'node:os'
@@ -20,7 +20,7 @@ const UUID = 'c0368d08-878f-4f47-b836-724248d8f7e8'
 
 // The example app with LicenseRail added by the CLI, in a temp folder.
 const app = mkdtempSync(join(tmpdir(), 'lr-yt-'))
-cpSync(join(root, 'example'), app, { recursive: true })
+for (const f of readdirSync(join(root, 'example'))) writeFileSync(join(app, f), readFileSync(join(root, 'example', f)))
 writeFileSync(join(app, 'key.pem'), pem)
 execFileSync(process.execPath, [join(root, 'bin', 'licenserail-youtrack.mjs'), 'add', app, '--vendor', VENDOR, '--product', 'yt-app',
   '--key-id', 'kid-1', '--public-key', join(app, 'key.pem'), '--api-url', 'https://api.example'], { encoding: 'utf8' })

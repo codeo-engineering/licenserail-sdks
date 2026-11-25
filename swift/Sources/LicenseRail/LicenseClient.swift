@@ -146,8 +146,11 @@ public final class LicenseClient {
         req.timeoutInterval = 10
         let (data, response) = try await URLSession.shared.data(for: req)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        let json = data.isEmpty ? [:] : (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
-        return (status < 400, json)
+        let ok = (200..<300).contains(status)
+        let json = data.isEmpty ? [:] : (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+        // Not our server (a captive portal, a proxy): the same as being offline.
+        if ok, json == nil { throw URLError(.cannotParseResponse) }
+        return (ok, json ?? [:])
     }
 
     private func saveIfValid(_ token: String) -> Bool {

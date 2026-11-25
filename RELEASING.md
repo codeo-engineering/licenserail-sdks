@@ -2,7 +2,7 @@
 
 `.github/workflows/release.yml` (Actions → Release → Run workflow) is started by hand: choose the package and the version.
 
-- Without **publish** it runs all SDK tests, builds the package and keeps it as an artifact. Nothing is published.
+- Without **publish** it runs all SDK tests and the end-to-end tests, builds the package and keeps it as an artifact. Nothing is published.
 - With **publish** (from `main` only) it does the same and then publishes. A published version can't be replaced.
 
 All packages share one version. `node tools/check-versions.mjs 0.1.0` lists the places that differ; the workflow runs it too.
@@ -24,6 +24,9 @@ environment `release` of this repository (Settings → Environments), with a req
 | Go, C++, CLI | this repository must be public | none |
 
 The mirror repositories `licenserail-swift` and `licenserail-php` start empty; the workflow fills them.
+
+The end-to-end tests read the API image: give this repository read access to the package `licenserail-api` (GitHub → package →
+Package settings → Manage Actions access).
 
 ## Order
 

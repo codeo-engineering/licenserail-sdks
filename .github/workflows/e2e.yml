@@ -1,0 +1,77 @@
+name: End-to-end
+
+# Every SDK's built package against a real API with its own empty database. Never talks to production.
+# Not on pull_request: the API image is private, and a fork's pull request must not be able to read it.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            sdks: typescript embedded youtrack cli dotnet python go
+          - os: ubuntu-latest
+            sdks: rust java php cpp
+          - os: windows-latest
+            sdks: typescript youtrack cli dotnet python go rust java
+          - os: macos-latest
+            sdks: swift typescript cli dotnet python go rust
+    name: e2e (${{ matrix.os }}, ${{ matrix.sdks }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    defaults: { run: { shell: bash } }
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - uses: actions/setup-go@v6
+        with: { go-version: stable, cache: false }
+      - uses: actions/setup-python@v6
+        with: { python-version: '3.12' }
+      - if: contains(matrix.sdks, 'java')
+        uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: '17' }
+      - if: contains(matrix.sdks, 'php')
+        uses: shivammathur/setup-php@v2
+        with: { php-version: '8.1', extensions: openssl, mbstring, tools: composer }
+      - if: contains(matrix.sdks, 'cpp')
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - if: runner.os == 'macOS'
+        run: brew install postgresql@17
+      # The API that runs in production, without Docker (macOS and Windows runners have none). Not uploaded as an artifact:
+      # artifacts of a public repository can be downloaded by anyone.
+      - name: Get the API
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          go install github.com/google/go-containerregistry/cmd/crane@v0.20.6
+          crane="$(go env GOPATH)/bin/crane"
+          printf '%s' "$TOKEN" | "$crane" auth login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          "$crane" export --platform linux/amd64 ghcr.io/codeo-engineering/licenserail-api:latest "$RUNNER_TEMP/api.tar"
+          mkdir "$RUNNER_TEMP/image"
+          cd "$RUNNER_TEMP/image" && tar -xf ../api.tar app
+      - name: Start the API
+        run: |
+          temp=$RUNNER_TEMP
+          if command -v cygpath >/dev/null; then temp=$(cygpath -m "$RUNNER_TEMP"); fi
+          bash e2e/start-api.sh "$temp/image/app" "$temp/e2e"
+          echo "E2E_MAIL=$temp/e2e/mail" >> "$GITHUB_ENV"
+          echo "E2E_WORK=$temp/work" >> "$GITHUB_ENV"
+      - run: node e2e/run.mjs ${{ matrix.sdks }}
+      - if: failure()
+        run: tail -100 "$RUNNER_TEMP/e2e/api.log" || true

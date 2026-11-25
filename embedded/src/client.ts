@@ -29,6 +29,8 @@ export interface ClientOptions {
   /** The host's current number of users, if the license is priced per host user. */
   hostUsers?: () => number | undefined
   now?: () => Date
+  /** Request timeout in milliseconds for the built-in transport (default 10 s). */
+  timeoutMs?: number
   /** Storage key prefix (default "licenserail:"). */
   prefix?: string
 }
@@ -43,19 +45,31 @@ export type ActionResult = { ok: true; state: LicenseState } | { ok: false; code
 
 type FetchLike = (url: string, init: object) => Promise<{ status: number; text(): Promise<string> }>
 
-const fetchTransport: Transport = async (r) => {
-  const fetchFn = (globalThis as { fetch?: FetchLike }).fetch
-  if (!fetchFn) return { status: 0, body: '' }
+interface HostGlobals {
+  fetch?: FetchLike
+  AbortController?: new () => { signal: unknown; abort(): void }
+  setTimeout?: (f: () => void, ms: number) => unknown
+  clearTimeout?: (timer: unknown) => void
+}
+
+const fetchTransport = (timeoutMs: number): Transport => async (r) => {
+  const host = globalThis as HostGlobals
+  if (!host.fetch) return { status: 0, body: '' }
+  // Hosts without timers or AbortController rely on their own request timeout.
+  const controller = host.AbortController && host.setTimeout ? new host.AbortController() : null
+  const timer = controller ? host.setTimeout!(() => controller.abort(), timeoutMs) : null
   try {
-    const res = await fetchFn(r.url, { method: r.method, headers: r.headers, body: r.body })
+    const res = await host.fetch(r.url, { method: r.method, headers: r.headers, body: r.body, ...(controller ? { signal: controller.signal } : {}) })
     return { status: res.status, body: await res.text() }
   } catch {
     return { status: 0, body: '' }
+  } finally {
+    if (timer !== null) host.clearTimeout?.(timer)
   }
 }
 
 export function createLicenseClient(o: ClientOptions) {
-  const send = o.transport ?? fetchTransport
+  const send = o.transport ?? fetchTransport(o.timeoutMs ?? 10_000)
   const now = () => (o.now ? o.now() : new Date())
   const key = (k: string) => (o.prefix ?? 'licenserail:') + k
   const target = { apiUrl: o.apiUrl, product: o.product, fingerprint: o.fingerprint }

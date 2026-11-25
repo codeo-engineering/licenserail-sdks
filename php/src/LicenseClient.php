@@ -207,13 +207,18 @@ final class LicenseClient
             }
             $status = isset($http_response_header[0]) && preg_match('/\s(\d{3})\s?/', $http_response_header[0], $m) ? (int) $m[1] : 0;
         }
+        $ok = $status >= 200 && $status < 300;
         $data = $text === '' ? [] : json_decode($text, true);
-        return [$status >= 200 && $status < 300, is_array($data) ? $data : []];
+        if ($ok && !is_array($data)) {
+            // Not our server (a captive portal, a proxy): the same as being offline.
+            return [false, null];
+        }
+        return [$ok, is_array($data) ? $data : []];
     }
 
-    private function saveIfValid(string $token): bool
+    private function saveIfValid(mixed $token): bool
     {
-        $p = Licensing::verifyToken($token, $this->publicKey);
+        $p = is_string($token) ? Licensing::verifyToken($token, $this->publicKey) : null;
         if ($p === null || strcasecmp($p['product'], $this->product) !== 0) {
             return false;
         }

@@ -4,13 +4,22 @@
 //                                             [--api-url https://api.licenserail.com] [--backend <folder of backend .js files>]
 // Copies the backend modules and the License page, merges settings.json, entity-extensions.json and manifest.json, and
 // writes licenserail-config.js (only if it doesn't exist yet). Running it again updates the LicenseRail files.
-import { cpSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const files = join(here, '..', 'dist', 'app-files')
 const fragments = JSON.parse(readFileSync(join(files, 'fragments.json'), 'utf8'))
+
+// Not cpSync: Node 22's crashes on Windows when the path has non-ASCII characters (e.g. the user's name).
+function copyFolder(from, to) {
+  mkdirSync(to, { recursive: true })
+  for (const f of readdirSync(from, { withFileTypes: true })) {
+    if (f.isDirectory()) copyFolder(join(from, f.name), join(to, f.name))
+    else writeFileSync(join(to, f.name), readFileSync(join(from, f.name)))
+  }
+}
 
 function usage(message) {
   if (message) console.error(message)
@@ -34,8 +43,8 @@ const readJson = (path, fallback) => (existsSync(path) ? JSON.parse(readFileSync
 const writeJson = (path, value) => writeFileSync(path, JSON.stringify(value, null, 2) + '\n')
 
 // Backend modules and the License page (always replaced, so updates land).
-for (const name of ['licenserail-core.js', 'licenserail.js', 'licenserail-license.js']) cpSync(join(files, name), join(backend, name))
-cpSync(join(files, 'widgets', 'licenserail-license'), join(backend, 'widgets', 'licenserail-license'), { recursive: true })
+for (const name of ['licenserail-core.js', 'licenserail.js', 'licenserail-license.js']) writeFileSync(join(backend, name), readFileSync(join(files, name)))
+copyFolder(join(files, 'widgets', 'licenserail-license'), join(backend, 'widgets', 'licenserail-license'))
 
 // Configuration (kept once written).
 const configPath = join(backend, 'licenserail-config.js')
