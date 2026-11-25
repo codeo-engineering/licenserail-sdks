@@ -11,8 +11,8 @@ const exe = windows ? '.exe' : ''
 
 function sh(cmd, args, cwd) {
   try {
-    // npm is a .cmd file on Windows and needs a shell there.
-    const shell = windows && cmd === 'npm'
+    // npm and mvn are .cmd files on Windows and need a shell there.
+    const shell = windows && ['npm', 'mvn'].includes(cmd)
     const list = shell ? args.map((a) => (/[\s&()^]/.test(a) ? `"${a}"` : a)) : args
     return execFileSync(cmd, list, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], shell, maxBuffer: 1 << 26 })
   } catch (e) {
