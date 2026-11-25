@@ -4,6 +4,8 @@
   "description": "LicenseRail client core for apps inside a host platform (YouTrack apps, browser extensions, web apps): offline ES256 verification without WebCrypto, installation identity, activation, trials. No dependencies.",
   "license": "MIT",
   "author": "Codeo Solutions Limited",
+  "homepage": "https://licenserail.com",
+  "repository": { "type": "git", "url": "git+https://github.com/codeo-engineering/licenserail-sdks.git", "directory": "embedded" },
   "type": "module",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

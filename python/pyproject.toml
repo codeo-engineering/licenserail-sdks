@@ -12,5 +12,9 @@ authors = [{ name = "Codeo Solutions Limited" }]
 requires-python = ">=3.10"
 dependencies = ["cryptography>=41"]
 
+[project.urls]
+Homepage = "https://licenserail.com"
+Repository = "https://github.com/codeo-engineering/licenserail-sdks"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/licenserail"]

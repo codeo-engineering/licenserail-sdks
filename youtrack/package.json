@@ -4,6 +4,8 @@
   "description": "LicenseRail for YouTrack apps: license keys, keyless trials and per-user limits for apps sold outside JetBrains Marketplace billing. Adds readable backend modules and a License admin page to your app.",
   "license": "MIT",
   "author": "Codeo Solutions Limited",
+  "homepage": "https://licenserail.com",
+  "repository": { "type": "git", "url": "git+https://github.com/codeo-engineering/licenserail-sdks.git", "directory": "youtrack" },
   "type": "module",
   "bin": { "licenserail-youtrack": "bin/licenserail-youtrack.mjs" },
   "files": ["bin", "dist"],

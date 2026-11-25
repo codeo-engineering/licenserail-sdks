@@ -1,8 +1,8 @@
 # LicenseRail SDKs
 
-Client SDKs for [LicenseRail](https://licenserail.com) licensing (working name), the CLI and the shared test vectors. MIT licensed.
+Client SDKs for [LicenseRail](https://licenserail.com) licensing, the CLI and the shared test vectors. MIT licensed.
 
-| Language | Folder | Package (planned) | Tested |
+| Language | Folder | Package | Tested |
 |---|---|---|---|
 | .NET | `dotnet/` | NuGet `LicenseRail` | vectors + example against a local API |
 | TypeScript / Node / Electron | `typescript/` | npm `licenserail` | vectors + example against a local API |
@@ -32,3 +32,5 @@ dotnet run --project tools/vectorgen -- test-vectors
 ```
 
 CI (`.github/workflows/sdks.yml`) runs every SDK against them.
+
+Releases: [RELEASING.md](RELEASING.md).

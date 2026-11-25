@@ -9,7 +9,14 @@
     <Authors>Codeo Solutions Limited</Authors>
     <Description>LicenseRail client SDK: offline license verification, activation, refresh, floating leases and the management API.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://licenserail.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/codeo-engineering/licenserail-sdks</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>

@@ -7,7 +7,13 @@
   <version>0.1.0</version>
   <name>LicenseRail</name>
   <description>LicenseRail client SDK: offline license verification, activation, refresh and floating leases.</description>
-  <licenses><license><name>MIT</name></license></licenses>
+  <url>https://licenserail.com</url>
+  <licenses><license><name>MIT</name><url>https://opensource.org/license/mit</url></license></licenses>
+  <developers><developer><name>Codeo Solutions Limited</name><organization>Codeo Solutions Limited</organization></developer></developers>
+  <scm>
+    <url>https://github.com/codeo-engineering/licenserail-sdks</url>
+    <connection>scm:git:https://github.com/codeo-engineering/licenserail-sdks.git</connection>
+  </scm>
   <organization><name>Codeo Solutions Limited</name></organization>
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
@@ -34,4 +40,44 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <!-- Maven Central: sources, javadoc, signature, upload. autoPublish is off: a person presses Publish in the portal. -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions><execution><id>sources</id><goals><goal>jar-no-fork</goal></goals></execution></executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.11.2</version>
+            <configuration><doclint>none</doclint></configuration>
+            <executions><execution><id>javadoc</id><goals><goal>jar</goal></goals></execution></executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
+            <configuration><gpgArguments><arg>--pinentry-mode</arg><arg>loopback</arg></gpgArguments></configuration>
+            <executions><execution><id>sign</id><phase>verify</phase><goals><goal>sign</goal></goals></execution></executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.8.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

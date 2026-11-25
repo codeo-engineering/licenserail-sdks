@@ -6,6 +6,10 @@ license = "MIT"
 authors = ["Codeo Solutions Limited"]
 description = "LicenseRail client SDK: offline license verification, activation, refresh and floating leases."
 repository = "https://github.com/codeo-engineering/licenserail-sdks"
+homepage = "https://licenserail.com"
+readme = "README.md"
+# The vector tests need ../test-vectors, which is not in the package.
+exclude = ["tests"]
 rust-version = "1.70"
 
 [dependencies]

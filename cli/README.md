@@ -1,6 +1,6 @@
 # licenserail CLI
 
-Single static binary (Go, no dependencies). Working name `licenserail`, alias `lr`.
+Single static binary (Go, no dependencies). Command `licenserail`, alias `lr`.
 
 ```
 go install github.com/codeo-engineering/licenserail-sdks/cli@latest   # or download a release binary
