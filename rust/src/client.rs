@@ -140,6 +140,11 @@ impl LicenseClient {
         if key.is_empty() {
             return fail("bad_request", "Enter the license key.");
         }
+        let fp = self.fingerprint();
+        if !fp.matches(&fp) {
+            // It would only use up a seat.
+            return fail("device_not_identified", "This device can't be identified, so a license can't be activated on it.");
+        }
         let name = machine_name.map(str::to_string).or_else(|| self.opts.machine_name.clone()).unwrap_or_else(host_name);
         let body = json!({ "licenseKey": key, "product": self.opts.product, "fingerprint": self.fingerprint(), "machineName": name, "appVersion": self.opts.app_version });
         let mut res = self.post("/api/client/v2/activate", &body);

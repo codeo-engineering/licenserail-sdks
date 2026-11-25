@@ -154,6 +154,9 @@ func (c *Client) Activate(ctx context.Context, licenseKey, machineName string) R
 	if licenseKey == "" {
 		return Result{ErrorCode: "bad_request", Message: "Enter the license key."}
 	}
+	if fp := c.fingerprint(); !fp.Matches(fp) { // would only use up a seat
+		return Result{ErrorCode: "device_not_identified", Message: "This device can't be identified, so a license can't be activated on it."}
+	}
 	if machineName == "" {
 		machineName = c.opts.MachineName
 	}

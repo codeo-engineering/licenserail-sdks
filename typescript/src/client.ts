@@ -6,6 +6,7 @@ import {
   decodeRunHistory,
   encodeRunHistory,
   evaluate,
+  fingerprintMatches,
   importPublicKey,
   REVOKING_CODES,
   verifyToken,
@@ -50,6 +51,10 @@ export interface CheckResult {
   status: LicenseStatus
   valid: boolean
   license: License | null
+}
+
+const notIdentified: ActivationResult = {
+  success: false, errorCode: 'device_not_identified', message: "This device can't be identified, so a license can't be activated on it.",
 }
 
 /** Read-only view of the current license. */
@@ -104,6 +109,8 @@ export class LicenseClient {
 
   private now(): Date { return this.options.now?.() ?? new Date() }
   private fingerprint(): Fingerprint { return (this.fp ??= this.options.fingerprint?.() ?? collectFingerprint(this.options.vendor, this.options.product)) }
+  /** Whether a license for this device would match it again; if not, activating would only use up a seat. */
+  private identified(): boolean { return fingerprintMatches(this.fingerprint(), this.fingerprint()) }
   private get tokenPath() { return join(this.dir, 'license.lic') }
   private get historyPath() { return join(this.dir, 'license.seen') }
 
@@ -148,6 +155,7 @@ export class LicenseClient {
   /** Activates `licenseKey` on this device (or checks out a floating lease if the license is floating). */
   async activate(licenseKey: string, machineName?: string): Promise<ActivationResult> {
     if (!licenseKey?.trim()) return { success: false, errorCode: 'bad_request', message: 'Enter the license key.' }
+    if (!this.identified()) return notIdentified
     const body = {
       licenseKey: licenseKey.trim(), product: this.options.product, fingerprint: this.fingerprint(),
       machineName: machineName ?? this.options.machineName ?? hostname(), appVersion: this.options.appVersion ?? null,
@@ -164,6 +172,7 @@ export class LicenseClient {
 
   /** Checks out a floating seat and keeps it alive with heartbeats until release(). */
   async checkout(licenseKey: string): Promise<ActivationResult> {
+    if (!this.identified()) return notIdentified
     const body = { licenseKey: licenseKey.trim(), product: this.options.product, fingerprint: this.fingerprint(), machineName: this.options.machineName ?? hostname(), appVersion: this.options.appVersion ?? null }
     const r = await this.post('/api/client/v2/floating/checkout', body).catch(() => null)
     if (!r) return { success: false, errorCode: 'network', message: 'Could not connect to the license server.' }

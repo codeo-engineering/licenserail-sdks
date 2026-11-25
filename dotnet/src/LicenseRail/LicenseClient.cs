@@ -128,6 +128,8 @@ public sealed class LicenseClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(licenseKey))
             return new(false, "bad_request", "Enter the license key.");
+        if (!_fingerprint.Value.Matches(_fingerprint.Value)) // would only use up a seat
+            return new(false, "device_not_identified", "This device can't be identified, so a license can't be activated on it.");
         var body = new
         {
             licenseKey = licenseKey.Trim(), product = _options.Product, fingerprint = _fingerprint.Value,

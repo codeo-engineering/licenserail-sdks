@@ -56,7 +56,8 @@ export const sdks = {
 
   // Floating licenses are not offered in YouTrack.
   youtrack: {
-    plainHistory: true, networkCode: 'network_error', skip: ['floating licenses: check out, heartbeat, release'],
+    // An installation always has an id.
+    plainHistory: true, networkCode: 'network_error', skip: ['floating licenses: check out, heartbeat, release', 'a device that cannot be identified uses no seat'],
     build: async (dir) => npmProject('youtrack', dir, ['embedded']),
   },
 

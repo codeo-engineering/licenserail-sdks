@@ -204,6 +204,8 @@ HttpResponse Client::post(const std::string& path, const std::string& body) {
 
 ActivationResult Client::activate(const std::string& key, const std::string& machine_name) {
     if (key.empty()) return {false, "bad_request", "Enter the license key."};
+    // It would only use up a seat.
+    if (!fp().matches(fp())) return {false, "device_not_identified", "This device can't be identified, so a license can't be activated on it."};
     std::string name = !machine_name.empty() ? machine_name : !options_.machine_name.empty() ? options_.machine_name : "Device";
     json body = {{"licenseKey", key}, {"product", options_.product}, {"fingerprint", fp_json(fp())}, {"machineName", name},
                  {"appVersion", options_.app_version}};

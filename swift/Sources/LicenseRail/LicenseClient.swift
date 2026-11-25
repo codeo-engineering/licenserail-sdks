@@ -80,6 +80,10 @@ public final class LicenseClient {
     public func activate(licenseKey: String, machineName: String? = nil) async -> ActivationResult {
         let k = licenseKey.trimmingCharacters(in: .whitespaces)
         guard !k.isEmpty else { return ActivationResult(success: false, errorCode: "bad_request", message: "Enter the license key.") }
+        // It would only use up a seat.
+        guard fp.matches(fp) else {
+            return ActivationResult(success: false, errorCode: "device_not_identified", message: "This device can't be identified, so a license can't be activated on it.")
+        }
         var body: [String: Any] = ["licenseKey": k, "product": options.product, "fingerprint": fpJSON(),
                                    "machineName": machineName ?? ProcessInfo.processInfo.hostName]
         body["appVersion"] = options.appVersion

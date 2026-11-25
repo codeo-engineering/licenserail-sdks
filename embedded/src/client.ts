@@ -1,4 +1,5 @@
 import { evaluate, summarize, type LicenseStatus, type LicenseSummary } from './evaluate.js'
+import { fingerprintMatches } from './fingerprint.js'
 import { activateRequest, deactivateRequest, readResponse, refreshDueAt, refreshRequest, trialRequest, type HttpRequestDescription } from './protocol.js'
 import { verifyTokenAsync, type Fingerprint, type LicensePayload } from './token.js'
 
@@ -89,6 +90,12 @@ export function createLicenseClient(o: ClientOptions) {
     return { status, payload, summary: payload ? summarize(payload, o.hostUsers?.()) : null }
   }
 
+  /** Set when a license for this device or installation would never match it again: activating would only use up a seat. */
+  async function unidentified(): Promise<ActionResult | null> {
+    if (fingerprintMatches(o.fingerprint, o.fingerprint)) return null
+    return { ok: false, code: 'device_not_identified', message: "This device can't be identified, so a license can't be activated on it.", state: await state() }
+  }
+
   async function accept(response: { status: number; body: string }): Promise<ActionResult> {
     const r = readResponse(response.status, response.body)
     if (r.ok && r.token) {
@@ -111,14 +118,14 @@ export function createLicenseClient(o: ClientOptions) {
 
     /** Activates a license key on this device or installation. */
     async activate(licenseKey: string, floating = false): Promise<ActionResult> {
-      return accept(await send(activateRequest({
+      return (await unidentified()) ?? accept(await send(activateRequest({
         ...target, licenseKey, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers?.(), floating,
       })))
     },
 
     /** Starts (or gets back) this device's or installation's keyless trial. */
     async startTrial(keyId: string): Promise<ActionResult> {
-      return accept(await send(trialRequest({ ...target, keyId, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers?.() })))
+      return (await unidentified()) ?? accept(await send(trialRequest({ ...target, keyId, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers?.() })))
     },
 
     /** Refreshes when the token asks for it (or always with force); keeps the token on network errors. */

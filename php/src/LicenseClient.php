@@ -132,6 +132,9 @@ final class LicenseClient
         if (trim($licenseKey) === '') {
             return new ActivationResult(false, 'Enter the license key.', 'bad_request');
         }
+        if (!Licensing::matches($this->fingerprint, $this->fingerprint)) { // would only use up a seat
+            return new ActivationResult(false, "This device can't be identified, so a license can't be activated on it.", 'device_not_identified');
+        }
         $body = ['licenseKey' => trim($licenseKey), 'product' => $this->product, 'fingerprint' => $this->fingerprint,
             'machineName' => $machineName ?? (string) gethostname(), 'appVersion' => $this->appVersion];
         [$ok, $data] = $this->post('/api/client/v2/activate', $body);

@@ -100,6 +100,8 @@ public final class LicenseClient {
 
     public ActivationResult activate(String licenseKey) {
         if (licenseKey == null || licenseKey.isBlank()) return new ActivationResult(false, "bad_request", "Enter the license key.");
+        if (!Licensing.matches(fingerprint(), fingerprint())) // would only use up a seat
+            return new ActivationResult(false, "device_not_identified", "This device can't be identified, so a license can't be activated on it.");
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("licenseKey", licenseKey.trim());
         body.put("product", options.product());

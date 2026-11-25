@@ -258,6 +258,24 @@ const scenarios = {
     refused(await app({ device: device('seat-d') }).activate(two.key), 'seat_limit_reached', 'two seats: third device')
   },
 
+  'a device that cannot be identified uses no seat': async ({ app, v }) => {
+    const l = await v.license()
+    const weak = ['none', 'none', device('weak').split(',')[2], 'none']   // e.g. a container without /etc/machine-id
+    const a = app({ device: weak.join(',') })
+    refused(await a.activate(l.key), 'device_not_identified', 'activate')
+    same(a.token(), null, 'license file')
+    // The server refuses it too, for apps with an older SDK.
+    const res = await fetch(`${API}/api/client/v2/activate`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        licenseKey: l.key, product: 'e2e-app', machineName: 'container', appVersion: null,
+        fingerprint: { machineId: weak[0], diskId: weak[1], hostName: weak[2], boardId: weak[3], os: 'linux' },
+      }),
+    })
+    same([res.status, (await res.json()).code], [400, 'device_not_identified'], 'server')
+    same((await activations(l)).length, 0, 'seats used')
+  },
+
   'deactivation frees the seat': async ({ app, v }) => {
     const l = await v.license()
     const a = app({ device: device('free-a') }), b = app({ device: device('free-b') })

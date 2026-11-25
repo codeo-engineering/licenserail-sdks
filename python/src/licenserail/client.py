@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from .core import (
-    REVOKING_CODES, Fingerprint, decode_run_history, encode_run_history, evaluate, hash_component, load_public_key, parse_time,
+    REVOKING_CODES, Fingerprint, decode_run_history, encode_run_history, evaluate, fingerprint_matches, hash_component, load_public_key, parse_time,
     verify_token,
 )
 
@@ -204,6 +204,8 @@ class LicenseClient:
     def activate(self, license_key: str, machine_name: Optional[str] = None) -> ActivationResult:
         if not license_key or not license_key.strip():
             return ActivationResult(False, "Enter the license key.", "bad_request")
+        if not fingerprint_matches(self.fingerprint, self.fingerprint):  # would only use up a seat
+            return ActivationResult(False, "This device can't be identified, so a license can't be activated on it.", "device_not_identified")
         body = {"licenseKey": license_key.strip(), "product": self.product, "fingerprint": self.fingerprint.to_json(),
                 "machineName": machine_name or self.machine_name, "appVersion": self.app_version}
         try:
