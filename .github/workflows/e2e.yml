@@ -62,9 +62,15 @@ jobs:
           go install github.com/google/go-containerregistry/cmd/crane@v0.20.6
           crane="$(go env GOPATH)/bin/crane"
           printf '%s' "$TOKEN" | "$crane" auth login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
-          "$crane" export --platform linux/amd64 ghcr.io/codeo-engineering/licenserail-api:latest "$RUNNER_TEMP/api.tar"
+          # Not "crane export": on Windows it writes backslashes into the archive's file names.
+          "$crane" pull --platform linux/amd64 ghcr.io/codeo-engineering/licenserail-api:latest "$RUNNER_TEMP/api.tar"
           mkdir "$RUNNER_TEMP/image"
-          cd "$RUNNER_TEMP/image" && tar -xf ../api.tar app
+          cd "$RUNNER_TEMP/image"
+          tar -xOf ../api.tar manifest.json > manifest.json
+          for layer in $(node -p "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))[0].Layers.join(' ')"); do
+            tar -xOf ../api.tar "$layer" | tar -xzf - app 2>/dev/null || true   # most layers have no /app
+          done
+          test -f app/LicenseRail.Api.dll
       - name: Start the API
         run: |
           temp=$RUNNER_TEMP
