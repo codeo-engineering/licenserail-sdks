@@ -5,6 +5,10 @@
 - Without **publish** it runs all SDK tests and the end-to-end tests, builds the package and keeps it as an artifact. Nothing is published.
 - With **publish** (from `main` only) it does the same and then publishes. A published version can't be replaced.
 
+**npm packages** are under the Codeo organization: `@codeo-engineering/licenserail`, `@codeo-engineering/licenserail-embedded`
+and `@codeo-engineering/licenserail-youtrack`. The unscoped `licenserail`, `licenserail-embedded` and `licenserail-youtrack` 0.1.0
+(2026-11-25, a personal account) were a mistake and are removed. Nothing else is published yet.
+
 All packages share one version. `node tools/check-versions.mjs 0.1.0` lists the places that differ; the workflow runs it too.
 
 ## Once, before the first release
@@ -14,7 +18,7 @@ environment `release` of this repository (Settings → Environments), with a req
 
 | Package | Account / setup | Secret in `release` |
 |---|---|---|
-| npm `licenserail`, `licenserail-embedded`, `licenserail-youtrack` | npmjs.com; granular token with read and write | `NPM_TOKEN` |
+| npm `@codeo-engineering/licenserail`, `-embedded`, `-youtrack` | npmjs.com, organization `codeo-engineering` (the scope puts the packages there); granular token: **Bypass two-factor authentication** checked (off by default; without it npm answers `EOTP`), Read and write (publish and stage), All packages | `NPM_TOKEN` |
 | NuGet `LicenseRail` | nuget.org organization; API key with push for `LicenseRail*` | `NUGET_API_KEY` |
 | PyPI `licenserail` | pypi.org; pending trusted publisher: owner `codeo-engineering`, repository `licenserail-sdks`, workflow `release.yml`, environment `release` | none |
 | crates.io `licenserail` | crates.io (GitHub sign-in, verified email); token with publish-new and publish-update | `CARGO_REGISTRY_TOKEN` |
@@ -23,10 +27,17 @@ environment `release` of this repository (Settings → Environments), with a req
 | Packagist `licenserail/licenserail` | public repository `licenserail-php`; deploy key with write access; submit the repository on packagist.org after the first release | `PHP_DEPLOY_KEY` |
 | Go, C++, CLI | this repository must be public | none |
 
+npm removes direct publishing with such tokens in January 2027. Before the next npm release set up trusted publishing for the three
+packages (they exist now); the workflow then needs no token.
+
 The mirror repositories `licenserail-swift` and `licenserail-php` start empty; the workflow fills them.
 
 The end-to-end tests read the API image: give this repository read access to the package `licenserail-api` (GitHub → package →
-Package settings → Manage Actions access).
+Package settings → Manage Actions access, role Read). Done on 2026-11-25.
+
+A run takes about 25 minutes. After a failed publish step use "Re-run failed jobs": the tests are not repeated. A new npm package
+shows `0.0.0-stage` for about a minute before its version appears. Start at most two releases at once: GitHub keeps one waiting
+run and cancels an older waiting one.
 
 ## Order
 

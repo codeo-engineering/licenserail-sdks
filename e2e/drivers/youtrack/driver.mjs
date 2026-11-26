@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 const e = process.env
 const app = mkdtempSync(join(e.LR_STORAGE, 'app-'))
 writeFileSync(join(app, 'manifest.json'), JSON.stringify({ name: 'e2e', widgets: [] }))
-const bin = fileURLToPath(new URL('node_modules/licenserail-youtrack/bin/licenserail-youtrack.mjs', import.meta.url))
+const bin = fileURLToPath(new URL('node_modules/@codeo-engineering/licenserail-youtrack/bin/licenserail-youtrack.mjs', import.meta.url))
 execFileSync(process.execPath, [bin, 'add', app, '--vendor', e.LR_VENDOR, '--product', e.LR_PRODUCT, '--key-id', 'none',
   '--public-key', e.LR_PUBLIC_KEY_FILE, '--api-url', e.LR_URL], { encoding: 'utf8' })
 

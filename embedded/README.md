@@ -1,4 +1,4 @@
-# licenserail-embedded
+# @codeo-engineering/licenserail-embedded
 
 The LicenseRail client core for apps that run **inside a host platform**. The server accepts the platform `youtrack` today.
 No dependencies and no Node APIs: it needs ES2020 (BigInt) and nothing else, so it also runs where `TextEncoder`,
@@ -12,13 +12,13 @@ No dependencies and no Node APIs: it needs ES2020 (BigInt) and nothing else, so 
   floating leases and keyless trials — no I/O of their own, so callback-style hosts can send them.
 - `createLicenseClient(...)`: a ready client for hosts that can await `fetch`.
 
-For YouTrack apps use [`licenserail-youtrack`](../youtrack), which wires this core into app settings, storage, async HTTP
+For YouTrack apps use [`@codeo-engineering/licenserail-youtrack`](../youtrack), which wires this core into app settings, storage, async HTTP
 and an admin page.
 
 ## Ready client (hosts with fetch)
 
 ```js
-import { createLicenseClient, installationFingerprint } from 'licenserail-embedded'
+import { createLicenseClient, installationFingerprint } from '@codeo-engineering/licenserail-embedded'
 
 const client = createLicenseClient({
   apiUrl: 'https://api.licenserail.com',

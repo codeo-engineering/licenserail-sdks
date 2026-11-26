@@ -1,7 +1,7 @@
-# licenserail-youtrack
+# @codeo-engineering/licenserail-youtrack
 
 Sell your YouTrack app with LicenseRail license keys: activation per YouTrack instance, keyless trials, per-user limits
-and a ready **License** page in the administration menu. Built on [`licenserail-embedded`](../embedded); everything that
+and a ready **License** page in the administration menu. Built on [`@codeo-engineering/licenserail-embedded`](../embedded); everything that
 ends up in your app is readable JavaScript, as JetBrains Marketplace requires.
 
 Needs YouTrack 2026.2 or later (async HTTP).
@@ -9,7 +9,7 @@ Needs YouTrack 2026.2 or later (async HTTP).
 ## Add it to your app
 
 ```sh
-npx licenserail-youtrack add ./my-app \
+npx @codeo-engineering/licenserail-youtrack add ./my-app \
   --vendor ten_... --product my-app --key-id <key id> --public-key public-key.pem
 ```
 

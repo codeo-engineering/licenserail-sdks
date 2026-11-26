@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Adds LicenseRail to a YouTrack app:
-//   npx licenserail-youtrack add <app folder> [--vendor ten_...] [--product code] [--key-id id] [--public-key key.pem]
+//   npx @codeo-engineering/licenserail-youtrack add <app folder> [--vendor ten_...] [--product code] [--key-id id] [--public-key key.pem]
 //                                             [--api-url https://api.licenserail.com] [--backend <folder of backend .js files>]
 // Copies the backend modules and the License page, merges settings.json, entity-extensions.json and manifest.json, and
 // writes licenserail-config.js (only if it doesn't exist yet). Running it again updates the LicenseRail files.

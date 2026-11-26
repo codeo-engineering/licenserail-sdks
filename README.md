@@ -5,7 +5,7 @@ Client SDKs for [LicenseRail](https://licenserail.com) licensing, the CLI and th
 | Language | Folder | Package | Tested |
 |---|---|---|---|
 | .NET | `dotnet/` | NuGet `LicenseRail` | vectors + example against a local API |
-| TypeScript / Node / Electron | `typescript/` | npm `licenserail` | vectors + example against a local API |
+| TypeScript / Node / Electron | `typescript/` | npm [`@codeo-engineering/licenserail`](https://www.npmjs.com/package/@codeo-engineering/licenserail) | vectors + example against a local API |
 | Python | `python/` | PyPI `licenserail` | vectors |
 | Go | `go/` | `github.com/codeo-engineering/licenserail-sdks/go` | vectors (CI) |
 | Rust | `rust/` | crates.io `licenserail` | vectors (CI) |
@@ -13,8 +13,8 @@ Client SDKs for [LicenseRail](https://licenserail.com) licensing, the CLI and th
 | Swift (macOS, iOS) | `swift/` | Swift Package | vectors (CI, macOS runner) |
 | C++ + C ABI | `cpp/` | CMake (mbedTLS, libcurl or your own transport) | vectors (CI) |
 | PHP / WordPress | `php/` | Packagist `licenserail/licenserail` | vectors (CI) |
-| Apps inside a host (YouTrack apps, browser extensions, web apps) | `embedded/` | npm `licenserail-embedded` | vectors, Wycheproof, sandbox (CI) |
-| YouTrack apps (adapter, License page, CLI) | `youtrack/` | npm `licenserail-youtrack` | fake YouTrack runtime (CI) |
+| Apps inside a host (YouTrack apps, browser extensions, web apps) | `embedded/` | npm [`@codeo-engineering/licenserail-embedded`](https://www.npmjs.com/package/@codeo-engineering/licenserail-embedded) | vectors, Wycheproof, sandbox (CI) |
+| YouTrack apps (adapter, License page, CLI) | `youtrack/` | npm [`@codeo-engineering/licenserail-youtrack`](https://www.npmjs.com/package/@codeo-engineering/licenserail-youtrack) | fake YouTrack runtime (CI) |
 
 Every SDK does the same things: verify the signed license file offline with the environment's public key (ECDSA P-256,
 IEEE P1363 signatures), hash the device fingerprint, evaluate offline (expiry, offline grace, clock rollback, suspension),
@@ -45,4 +45,4 @@ e2e/start-api.sh <published API folder> <work folder>
 E2E_MAIL=<work folder>/mail node e2e/run.mjs typescript go
 ```
 
-Releases: [RELEASING.md](RELEASING.md).
+Every SDK also passes the end-to-end tests above. Releases: [RELEASING.md](RELEASING.md).

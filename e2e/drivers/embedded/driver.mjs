@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { createLicenseClient, installationFingerprint } from 'licenserail-embedded'
+import { createLicenseClient, installationFingerprint } from '@codeo-engineering/licenserail-embedded'
 
 const e = process.env
 const [m, d, h, b] = (e.LR_DEVICE ?? '').split(',')

@@ -3,11 +3,11 @@
 Client SDK for [LicenseRail](https://licenserail.com) licensing. MIT.
 
 ```sh
-npm install licenserail
+npm install @codeo-engineering/licenserail
 ```
 
 ```ts
-import { LicenseClient } from 'licenserail'
+import { LicenseClient } from '@codeo-engineering/licenserail'
 
 const client = new LicenseClient({ serverUrl: 'https://api.licenserail.com', vendor: 'ten_6f1a7e2c3b4d4e5f8a9b0c1d2e3f4a5b', product: 'my-app', publicKeyPem, appVersion: '1.0.0' })
 const result = await client.check()         // offline check, refreshed online when due

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { LicenseClient } from 'licenserail'
+import { LicenseClient } from '@codeo-engineering/licenserail'
 
 const e = process.env
 const [m, d, h, b] = (e.LR_DEVICE ?? '').split(',')
