@@ -3,7 +3,7 @@
 Single static binary (Go, no dependencies). Command `licenserail`, alias `lr`.
 
 ```
-go install github.com/codeo-engineering/licenserail-sdks/cli@latest   # or download a release binary
+go install github.com/codeo-engineering/licenserail-sdks/cli/cmd/licenserail@latest   # or download a release binary
 licenserail login                       # emailed 6-digit code; the first sign-in creates your organization and a Test key
 licenserail products create --code my-app --name "My App"
 licenserail customers create --name "Acme"

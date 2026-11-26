@@ -65,7 +65,7 @@ export const sdks = {
     cli: true,
     async build(dir) {
       empty(dir)
-      sh('go', ['build', '-o', join(dir, 'licenserail' + exe), '.'], join(root, 'cli'))
+      sh('go', ['build', '-o', join(dir, 'licenserail' + exe), './cmd/licenserail'], join(root, 'cli'))
       return [join(dir, 'licenserail' + exe)]
     },
   },

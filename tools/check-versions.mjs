@@ -19,7 +19,7 @@ const places = {
   'java/pom.xml': /<version>([^<]+)<\/version>/,
   'dotnet/src/LicenseRail/LicenseRail.csproj': /<Version>([^<]+)<\/Version>/,
   'cpp/CMakeLists.txt': /project\(licenserail VERSION ([\d.]+)/,
-  'cli/main.go': /const version = "([^"]+)"/,
+  'cli/cmd/licenserail/main.go': /const version = "([^"]+)"/,
 }
 let bad = 0
 for (const [file, pattern] of Object.entries(places)) {

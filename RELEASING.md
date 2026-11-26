@@ -49,8 +49,8 @@ run and cancels an older waiting one.
 6. `cli`: the workflow makes a draft GitHub release; publishing the draft creates the tag `cli/v0.1.0`.
 7. Install each package in an empty project with the command from the docs.
 
-Before step 6: `go install .../licenserail-sdks/cli@latest` installs a program called `cli`, not `licenserail` (Go names it after
-the last folder). Either move the program to a folder `licenserail` or point the docs to the release binaries.
+The CLI's program lives in `cli/cmd/licenserail`, so `go install .../licenserail-sdks/cli/cmd/licenserail@latest` installs a
+program called `licenserail` (Go names it after the last folder).
 
 ## A new version
 

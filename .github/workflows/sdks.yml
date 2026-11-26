@@ -129,6 +129,6 @@ jobs:
       - name: Build for every platform
         run: |
           for t in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64; do
-            GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go build -o /tmp/licenserail-${t%/*}-${t#*/} .
+            GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go build -o /tmp/licenserail-${t%/*}-${t#*/} ./cmd/licenserail
           done
       - run: /tmp/licenserail-linux-amd64 --help
