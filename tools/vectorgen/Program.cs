@@ -9,13 +9,11 @@ string outDir = args.Length > 0 ? args[0] : Path.GetFullPath(Path.Combine(AppCon
 Directory.CreateDirectory(outDir);
 var indented = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
-// Test-only keys (never used by any environment). Committed so vectors can be regenerated identically.
-const string TestKeyPem = """
------BEGIN PRIVATE KEY-----
-(removed from history)
------END PRIVATE KEY-----
-""";
-using ECDsa key = LoadOrCreate(TestKeyPem);
+// The signing key of the vectors is test-only and kept out of the repository. Regenerating identical vectors needs the same
+// key: point LICENSERAIL_VECTOR_KEY to its PEM file. The committed vectors are what the SDK tests use.
+string keyFile = Environment.GetEnvironmentVariable("LICENSERAIL_VECTOR_KEY")
+    ?? throw new InvalidOperationException("Set LICENSERAIL_VECTOR_KEY to the PEM file of the vectors' test key.");
+using ECDsa key = LoadOrCreate(File.ReadAllText(keyFile));
 using ECDsa other = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 string publicPem = key.ExportSubjectPublicKeyInfoPem();
 
