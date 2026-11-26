@@ -19,7 +19,7 @@ environment `release` of this repository (Settings → Environments), with a req
 | Package | Account / setup | Secret in `release` |
 |---|---|---|
 | npm `@codeo-engineering/licenserail`, `-embedded`, `-youtrack` | npmjs.com, organization `codeo-engineering` (the scope puts the packages there); granular token: **Bypass two-factor authentication** checked (off by default; without it npm answers `EOTP`), Read and write (publish and stage), All packages | `NPM_TOKEN` |
-| NuGet `LicenseRail` | nuget.org organization; API key with push for `LicenseRail*` | `NUGET_API_KEY` |
+| NuGet `LicenseRail` | nuget.org, user name in `NUGET_USER`; Trusted Publishing policy: owner `codeo-engineering`, repository `licenserail-sdks`, workflow `release.yml`, environment `release`, push new packages, `LicenseRail*` (a private repository keeps it temporary for 7 days until the first publish) | none |
 | PyPI `licenserail` | pypi.org; pending trusted publisher: owner `codeo-engineering`, repository `licenserail-sdks`, workflow `release.yml`, environment `release` | none |
 | crates.io `licenserail` | crates.io (GitHub sign-in, verified email); token with publish-new and publish-update | `CARGO_REGISTRY_TOKEN` |
 | Maven `com.licenserail:licenserail` | central.sonatype.com; namespace `com.licenserail` verified by a DNS TXT record; user token; GPG key, public part on a key server | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE` |
