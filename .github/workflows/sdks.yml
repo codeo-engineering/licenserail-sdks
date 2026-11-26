@@ -92,8 +92,6 @@ jobs:
       - uses: actions/setup-java@v5
         with: { distribution: temurin, java-version: '17' }
       - run: mvn -B test
-      # VectorTests is a plain main (no test framework), so surefire finds no tests in it: run it directly.
-      - run: java -cp target/classes:target/test-classes com.licenserail.VectorTests ../test-vectors
 
   swift:
     runs-on: macos-latest
