@@ -26,8 +26,8 @@ function body(ctx) {
 }
 
 function remember(ctx) {
-  const id = body(ctx).installationId;
-  if (id) licenserail.setInstallation(ctx, id);
+  const b = body(ctx);
+  if (b.installationId) licenserail.setInstallation(ctx, b.installationId, b.baseUrls);
 }
 
 exports.httpHandler = {

@@ -4,6 +4,15 @@ One version per working day with changes. All packages share the version; only t
 others stay on their last published version. The day's last commit carries the tag `vX.Y.Z` (Go: `go/vX.Y.Z`, CLI: `cli/vX.Y.Z`
 when they are released).
 
+## 0.1.2 — 2026-11-27
+
+Published: `@codeo-engineering/licenserail-youtrack`.
+
+- licenserail-youtrack: the License page also stores the instance's address, so `startTrial(ctx)` called from the app's own code
+  sends it (0.1.1 sent no address there and the trial was refused).
+- OpenAPI: the trial request's `host` field and the `trial_host_unverified` error.
+- READMEs: trials need an instance reachable from the internet.
+
 ## 0.1.1 — 2026-11-27
 
 Published: `@codeo-engineering/licenserail-embedded`, `@codeo-engineering/licenserail-youtrack`.

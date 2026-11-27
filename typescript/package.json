@@ -1,6 +1,6 @@
 {
   "name": "@codeo-engineering/licenserail",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "LicenseRail client SDK: offline license verification, activation, refresh, floating leases and the management API.",
   "license": "MIT",
   "publishConfig": { "access": "public" },

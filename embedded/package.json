@@ -1,6 +1,6 @@
 {
   "name": "@codeo-engineering/licenserail-embedded",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "LicenseRail client core for apps inside a host platform (YouTrack apps, browser extensions, web apps): offline ES256 verification without WebCrypto, installation identity, activation, trials. No dependencies.",
   "license": "MIT",
   "publishConfig": { "access": "public" },

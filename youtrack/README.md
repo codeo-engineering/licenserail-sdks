@@ -56,7 +56,9 @@ and never return the key or the token.
 - **Activation, trial, refresh, release:** async HTTP (`postAsync`); the answer is stored in app storage and the page
   shows the result. The license is refreshed daily; network errors keep it working until its offline period ends.
 - **Users:** the instance's user count is sent with activations and refreshes; the license decides (block, warn or report).
-- **Trials:** one per YouTrack instance, reinstalls included; no key ships with the app.
+- **Trials:** one per YouTrack instance, reinstalls included; no key ships with the app. LicenseRail confirms the instance at its
+  address first, so it must be reachable from the internet (self-hosted behind a firewall: give a trial key instead). Needs 0.1.2
+  or later for trials started from your own code.
 
 ## Marketplace listing
 

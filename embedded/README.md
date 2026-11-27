@@ -29,7 +29,9 @@ const client = createLicenseClient({
   appVersion: '1.2.0',
 })
 
-await client.startTrial(KEY_ID)                 // keyless trial (once per installation)
+await client.startTrial(KEY_ID, { instanceId: installationId, baseUrls: ['https://acme.youtrack.cloud'] })
+                                                // keyless trial, once per installation; the server confirms the
+                                                // instance at its address, so it must be reachable from the internet
 await client.activate(licenseKey)               // a license key
 const { status, summary } = await client.state()   // offline check: 'Valid', 'Expired', 'OfflineTooLong', ...
 await client.refresh()                          // when the token asks for it; keeps the license on network errors

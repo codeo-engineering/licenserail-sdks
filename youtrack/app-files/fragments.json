@@ -11,6 +11,7 @@
     "licenserailToken": { "type": "string" },
     "licenserailLastSeen": { "type": "string" },
     "licenserailInstallation": { "type": "string" },
+    "licenserailBaseUrls": { "type": "string" },
     "licenserailState": { "type": "string" }
   },
   "widget": {

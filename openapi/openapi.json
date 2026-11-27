@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5080/"
+      "url": "https://api.licenserail.com/"
     }
   ],
   "paths": {
@@ -1551,7 +1551,7 @@
         "tags": [
           "webhooks"
         ],
-        "summary": "Create a webhook endpoint; the signing secret (whsec_â€¦) is shown once",
+        "summary": "Create a webhook endpoint; the signing secret (whsec_…) is shown once",
         "operationId": "create_webhook_endpoint",
         "requestBody": {
           "content": {
@@ -2427,6 +2427,26 @@
           }
         }
       },
+      "TrialHost": {
+        "required": [
+          "instanceId"
+        ],
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string"
+          },
+          "baseUrls": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "TrialRequest": {
         "required": [
           "keyId",
@@ -2464,6 +2484,16 @@
               "string"
             ],
             "format": "int32"
+          },
+          "host": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TrialHost"
+              }
+            ]
           }
         }
       }
@@ -2471,7 +2501,7 @@
     "securitySchemes": {
       "apiKey": {
         "type": "http",
-        "description": "Secret or restricted API key (lr_test_â€¦, lr_live_â€¦, lr_rk_â€¦) or a CLI/OAuth access token.",
+        "description": "Secret or restricted API key (lr_test_…, lr_live_…, lr_rk_…) or a CLI/OAuth access token.",
         "scheme": "bearer"
       }
     }

@@ -150,6 +150,9 @@ test('a revoked license is removed; a trial uses the key id and no key', () => {
   assert.equal(sent.keyId, 'kid-1')
   // The server checks this instance at the address the admin page was opened from.
   assert.deepEqual(sent.host, { instanceId: UUID, baseUrls: ['https://acme.youtrack.cloud'] })
+  // Started later from the app's own code (no address given): the address remembered from the License page is used.
+  lr.startTrial(ctx())
+  assert.deepEqual(JSON.parse(calls.at(-1).payload).host, { instanceId: UUID, baseUrls: ['https://acme.youtrack.cloud'] })
   deliver(200, { token: token({ kind: 'trial', trial: true, licenseKey: '', expiresAt: new Date(Date.now() + 14 * 86400000).toISOString() }) })
   const feature = ctx()
   report.endpoints[0].handle(feature)

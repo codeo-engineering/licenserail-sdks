@@ -18,6 +18,7 @@ const PROPERTY = {
   token: 'licenserailToken',
   lastSeen: 'licenserailLastSeen',
   installation: 'licenserailInstallation',
+  baseUrls: 'licenserailBaseUrls',
   state: 'licenserailState',
 };
 const PLATFORM = 'youtrack';
@@ -105,10 +106,21 @@ function hasFeature(ctx, code) {
   return license.valid && license.summary.entitlements.indexOf(code) >= 0;
 }
 
-/** Remembers this YouTrack instance's id (read by the admin page from /api/config). */
-function setInstallation(ctx, id) {
+/** Addresses like https://acme.youtrack.cloud (scheme and host only), at most three. */
+function cleanBaseUrls(baseUrls) {
+  return (Array.isArray(baseUrls) ? baseUrls : [])
+    .filter(function (u) { return typeof u === 'string' && /^https?:\/\/[^\s/]+$/.test(u); }).slice(0, 3);
+}
+
+/**
+ * Remembers this YouTrack instance's id (read by the admin page from /api/config) and the addresses the page was opened from,
+ * which a trial started later from the app's own code uses.
+ */
+function setInstallation(ctx, id, baseUrls) {
   if (typeof id !== 'string' || !/^[A-Za-z0-9-]{8,64}$/.test(id)) throw new Error('Invalid installation id.');
   if (props(ctx)[PROPERTY.installation] !== id) props(ctx)[PROPERTY.installation] = id;
+  const urls = cleanBaseUrls(baseUrls);
+  if (urls.length && props(ctx)[PROPERTY.baseUrls] !== urls.join(' ')) props(ctx)[PROPERTY.baseUrls] = urls.join(' ');
 }
 
 function common(ctx) {
@@ -123,14 +135,14 @@ function activate(ctx) {
 }
 
 /**
- * Starts the keyless trial. LicenseRail asks this YouTrack instance for its id at baseUrls (the addresses the admin page was
- * opened from) before the trial starts, so the instance must be reachable from the internet.
+ * Starts the keyless trial. LicenseRail asks this YouTrack instance for its id at its address before the trial starts, so the
+ * instance must be reachable from the internet. Without baseUrls the addresses remembered from the License page are used.
  */
 function startTrial(ctx, baseUrls) {
   const t = target(ctx);
   if (!t.fingerprint) throw new Error('Open the license page once so the app knows this YouTrack instance.');
-  const urls = (Array.isArray(baseUrls) ? baseUrls : [])
-    .filter(function (u) { return typeof u === 'string' && /^https?:\/\/[^\s/]+$/.test(u); }).slice(0, 3);
+  let urls = cleanBaseUrls(baseUrls);
+  if (!urls.length) urls = cleanBaseUrls(String(props(ctx)[PROPERTY.baseUrls] || '').split(' '));
   writeState(ctx, { pending: 'trial', lastAttemptAt: new Date().toISOString() });
   send(ctx, core.trialRequest(Object.assign(t, common(ctx), {
     keyId: config.keyId, host: { instanceId: installationId(ctx), baseUrls: urls },
