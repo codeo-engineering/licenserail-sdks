@@ -10,4 +10,4 @@ __all__ = [
     "REVOKING_CODES", "collect_fingerprint", "evaluate", "fingerprint_matches", "hash_component", "load_public_key",
     "verify_token", "verify_webhook",
 ]
-__version__ = "0.1.0"
+__version__ = "0.1.1"

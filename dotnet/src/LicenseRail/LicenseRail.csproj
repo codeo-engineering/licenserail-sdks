@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>LicenseRail</RootNamespace>
     <PackageId>LicenseRail</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Codeo Solutions Limited</Authors>
     <Description>LicenseRail client SDK: offline license verification, activation, refresh, floating leases and the management API.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -54,5 +54,9 @@ program called `licenserail` (Go names it after the last folder).
 
 ## A new version
 
+Every working day with changes is a new version (patch while on 0.x for fixes and small additions). Add the day to
+`CHANGELOG.md` with the packages that were published, then tag the day's last commit `vX.Y.Z`.
+
+
 Change the version everywhere (the check lists the places; also `npm install --package-lock-only` in the three npm folders),
 merge to `main`, then run the workflow per package.

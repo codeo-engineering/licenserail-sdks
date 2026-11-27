@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "licenserail"
-version = "0.1.0"
+version = "0.1.1"
 description = "LicenseRail client SDK: offline license verification, activation, refresh, floating leases and the management API."
 readme = "README.md"
 license = "MIT"
