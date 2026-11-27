@@ -142,11 +142,14 @@ test('a revoked license is removed; a trial uses the key id and no key', () => {
   endpoint('status', 'GET').handle(s)
   assert.equal(s.response.body.status, 'Missing')
 
-  endpoint('trial', 'POST').handle(ctx())
+  endpoint('trial', 'POST').handle(ctx({ request: { json: () => ({ installationId: UUID, baseUrls: ['https://acme.youtrack.cloud', 'javascript:x', 7] }) } }))
   const call = calls.at(-1)
   assert.equal(call.uri, '/api/client/v2/trial')
   assert.equal(call.bearer, null)
-  assert.equal(JSON.parse(call.payload).keyId, 'kid-1')
+  const sent = JSON.parse(call.payload)
+  assert.equal(sent.keyId, 'kid-1')
+  // The server checks this instance at the address the admin page was opened from.
+  assert.deepEqual(sent.host, { instanceId: UUID, baseUrls: ['https://acme.youtrack.cloud'] })
   deliver(200, { token: token({ kind: 'trial', trial: true, licenseKey: '', expiresAt: new Date(Date.now() + 14 * 86400000).toISOString() }) })
   const feature = ctx()
   report.endpoints[0].handle(feature)

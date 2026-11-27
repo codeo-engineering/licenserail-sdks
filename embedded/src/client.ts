@@ -1,6 +1,6 @@
 import { evaluate, summarize, type LicenseStatus, type LicenseSummary } from './evaluate.js'
 import { fingerprintMatches } from './fingerprint.js'
-import { activateRequest, deactivateRequest, readResponse, refreshDueAt, refreshRequest, trialRequest, type HttpRequestDescription } from './protocol.js'
+import { activateRequest, deactivateRequest, readResponse, refreshDueAt, refreshRequest, trialRequest, type HttpRequestDescription, type TrialHost } from './protocol.js'
 import { verifyTokenAsync, type Fingerprint, type LicensePayload } from './token.js'
 
 // A ready client for hosts that can await HTTP calls (browser extensions, web apps, workers, Electron renderers).
@@ -123,9 +123,11 @@ export function createLicenseClient(o: ClientOptions) {
       })))
     },
 
-    /** Starts (or gets back) this device's or installation's keyless trial. */
-    async startTrial(keyId: string): Promise<ActionResult> {
-      return (await unidentified()) ?? accept(await send(trialRequest({ ...target, keyId, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers?.() })))
+    /** Starts (or gets back) this device's or installation's keyless trial; apps inside a host pass the installation. */
+    async startTrial(keyId: string, host?: TrialHost): Promise<ActionResult> {
+      return (await unidentified()) ?? accept(await send(trialRequest({
+        ...target, keyId, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers?.(), host,
+      })))
     },
 
     /** Refreshes when the token asks for it (or always with force); keeps the token on network errors. */

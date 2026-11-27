@@ -95,9 +95,20 @@ export function deactivateRequest(o: Target & { token: string; floating?: boolea
   }
 }
 
+/**
+ * The host installation a trial is for. The server asks it for its id before a trial starts (YouTrack: the uuid that
+ * /api/config returns at baseUrls), so it must be reachable from the internet; otherwise the vendor gives a trial key.
+ */
+export interface TrialHost {
+  instanceId: string
+  baseUrls?: string[]
+}
+
 export interface TrialOptions extends Target {
   /** The environment's signing key id (public; shown with the public key in the dashboard). */
   keyId: string
+  /** Required for apps inside a host (fingerprint made with installationFingerprint from the same instance id). */
+  host?: TrialHost
   machineName?: string
   appVersion?: string
   hostUsers?: number
@@ -108,7 +119,10 @@ export function trialRequest(o: TrialOptions): HttpRequestDescription {
     method: 'POST',
     url: url(o.apiUrl, '/trial'),
     headers: headers(o.fingerprint),
-    body: JSON.stringify(clean({ keyId: o.keyId, product: o.product, fingerprint: o.fingerprint, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers })),
+    body: JSON.stringify(clean({
+      keyId: o.keyId, product: o.product, fingerprint: o.fingerprint, machineName: o.machineName, appVersion: o.appVersion, hostUsers: o.hostUsers,
+      host: o.host,
+    })),
   }
 }
 

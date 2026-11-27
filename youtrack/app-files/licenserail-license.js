@@ -60,7 +60,7 @@ exports.httpHandler = {
       handle: function (ctx) {
         guard(ctx, function () {
           remember(ctx);
-          licenserail.startTrial(ctx);
+          licenserail.startTrial(ctx, body(ctx).baseUrls);
           ctx.response.statusCode = 202;
           ctx.response.json(licenserail.status(ctx));
         });

@@ -12,8 +12,23 @@ try {
   installationId = null
 }
 
+/** Where this YouTrack is reached, as the browser sees it (the page runs inside it); LicenseRail checks the instance there. */
+function baseUrls() {
+  const seen = []
+  const add = (value) => {
+    try {
+      const origin = new URL(value).origin
+      if (/^https?:/.test(origin) && !seen.includes(origin)) seen.push(origin)
+    } catch { /* not a URL */ }
+  }
+  if (window.location.ancestorOrigins?.length) add(window.location.ancestorOrigins[window.location.ancestorOrigins.length - 1])
+  if (document.referrer) add(document.referrer)
+  add(window.location.href)
+  return seen.slice(0, 3)
+}
+
 async function call(path, method = 'GET') {
-  return host.fetchApp(`${HANDLER}/${path}`, method === 'GET' ? { method } : { method, body: { installationId } })
+  return host.fetchApp(`${HANDLER}/${path}`, method === 'GET' ? { method } : { method, body: { installationId, baseUrls: baseUrls() } })
 }
 
 const LABELS = {

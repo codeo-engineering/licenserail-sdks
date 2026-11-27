@@ -122,11 +122,19 @@ function activate(ctx) {
   send(ctx, core.activateRequest(Object.assign(t, common(ctx))), RESPONSE, true);
 }
 
-function startTrial(ctx) {
+/**
+ * Starts the keyless trial. LicenseRail asks this YouTrack instance for its id at baseUrls (the addresses the admin page was
+ * opened from) before the trial starts, so the instance must be reachable from the internet.
+ */
+function startTrial(ctx, baseUrls) {
   const t = target(ctx);
   if (!t.fingerprint) throw new Error('Open the license page once so the app knows this YouTrack instance.');
+  const urls = (Array.isArray(baseUrls) ? baseUrls : [])
+    .filter(function (u) { return typeof u === 'string' && /^https?:\/\/[^\s/]+$/.test(u); }).slice(0, 3);
   writeState(ctx, { pending: 'trial', lastAttemptAt: new Date().toISOString() });
-  send(ctx, core.trialRequest(Object.assign(t, common(ctx), { keyId: config.keyId })), RESPONSE, false);
+  send(ctx, core.trialRequest(Object.assign(t, common(ctx), {
+    keyId: config.keyId, host: { instanceId: installationId(ctx), baseUrls: urls },
+  })), RESPONSE, false);
 }
 
 function refresh(ctx) {
