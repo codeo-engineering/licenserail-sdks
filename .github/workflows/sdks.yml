@@ -105,7 +105,7 @@ jobs:
     defaults: { run: { working-directory: cpp } }
     steps:
       - uses: actions/checkout@v5
-      - run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - run: (sudo apt-get update || true) && sudo apt-get install -y libcurl4-openssl-dev
       - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
       - run: ./build/licenserail_vectors ../test-vectors
 

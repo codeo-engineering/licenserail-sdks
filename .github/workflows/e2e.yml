@@ -50,7 +50,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with: { php-version: '8.1', extensions: openssl, mbstring, tools: composer }
       - if: contains(matrix.sdks, 'cpp')
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+        run: (sudo apt-get update || true) && sudo apt-get install -y libcurl4-openssl-dev
       - if: runner.os == 'macOS'
         run: brew install postgresql@17
       # The API that runs in production, without Docker (macOS and Windows runners have none). Not uploaded as an artifact:
